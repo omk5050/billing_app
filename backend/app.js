@@ -12,7 +12,6 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-// Mount auth routes
 app.use('/api/auth', authRoutes);
 
 module.exports = app;
