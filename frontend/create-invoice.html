@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BillFlow – Create Invoice</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="app-shell d-flex">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+      <span class="brand-name">BillFlow</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="index.html" class="nav-item">
+        <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+      </a>
+      <a href="create-invoice.html" class="nav-item active">
+        <i class="bi bi-plus-square"></i><span>Create Bill</span>
+      </a>
+      <a href="invoices.html" class="nav-item">
+        <i class="bi bi-receipt"></i><span>Invoices</span>
+      </a>
+      <a href="customers.html" class="nav-item">
+        <i class="bi bi-people"></i><span>Patient</span>
+      </a>
+      <a href="reports.html" class="nav-item">
+        <i class="bi bi-bar-chart-line"></i><span>Reports</span>
+      </a>
+      <a href="settings.html" class="nav-item">
+        <i class="bi bi-gear"></i><span>Settings</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-avatar">A</div>
+      <div>
+        <div class="user-name">Admin</div>
+        <div class="user-role">Super Admin</div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title">Create Invoice</h1>
+        <p class="page-sub">Fill in the details to generate a new invoice.</p>
+      </div>
+      <div class="topbar-actions">
+        <span class="inv-badge">Draft: <strong id="invNumber"></strong></span>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="create-layout">
+        <!-- Left Column: Form -->
+        <div class="create-form-col">
+
+          <!-- Customer Details -->
+          <div class="card-box mb-4">
+            <div class="section-header-row">
+              <div class="section-icon-wrap blue"><i class="bi bi-person-badge"></i></div>
+              <h2 class="section-title">Patient Details</h2>
+            </div>
+            <div class="row g-3 mt-1">
+              <div class="col-md-12">
+                <label class="form-label-custom">Full Name</label>
+                <div class="input-icon-wrap">
+                  <i class="bi bi-person"></i>
+                  <input type="text" class="form-input" id="custName" placeholder="e.g. Rahul Sharma">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label-custom">Phone Number</label>
+                <div class="input-icon-wrap">
+                  <i class="bi bi-telephone"></i>
+                  <input type="tel" class="form-input" id="custPhone" placeholder="+91 9876543210">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label-custom">Email Address</label>
+                <div class="input-icon-wrap">
+                  <i class="bi bi-envelope"></i>
+                  <input type="email" class="form-input" id="custEmail" placeholder="rahul@example.com">
+                </div>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label-custom">Billing Address (Optional)</label>
+                <textarea class="form-input" rows="2" placeholder="Street, City, PIN code"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Invoice Meta -->
+          <div class="card-box mb-4">
+            <div class="section-header-row">
+              <div class="section-icon-wrap green"><i class="bi bi-calendar-event"></i></div>
+              <h2 class="section-title">Invoice Details</h2>
+            </div>
+            <div class="row g-3 mt-1">
+              <div class="col-md-6">
+                <label class="form-label-custom">Invoice Date</label>
+                <input type="date" class="form-input" id="invDate">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label-custom">Due Date</label>
+                <input type="date" class="form-input" id="dueDate">
+              </div>
+            </div>
+          </div>
+
+          <!-- Items Table -->
+          <div class="card-box mb-4">
+            <div class="section-header-row">
+              <div class="section-icon-wrap orange"><i class="bi bi-box-seam"></i></div>
+              <h2 class="section-title">Medicines</h2>
+            </div>
+
+            <div class="items-table-wrap mt-3">
+              <div class="items-header">
+                <span class="col-item-name">Product / Service</span>
+                <span class="col-item-qty">Qty</span>
+                <span class="col-item-price">Rate (₹)</span>
+                <span class="col-item-total">Total</span>
+                <span class="col-item-del"></span>
+              </div>
+              <div id="itemsBody">
+                <!-- Rows inserted by JS -->
+              </div>
+            </div>
+
+            <button class="add-item-btn mt-3" id="addItemBtn">
+              <i class="bi bi-plus-circle"></i> Add Item
+            </button>
+          </div>
+
+          <!-- Notes -->
+          <div class="card-box mb-4">
+            <label class="form-label-custom">Notes / Terms (Optional)</label>
+            <textarea class="form-input" rows="3" placeholder="Payment terms, thank you note, special instructions..."></textarea>
+          </div>
+        </div>
+
+        <!-- Right Column: Summary -->
+        <div class="create-summary-col">
+          <div class="summary-sticky">
+            <!-- Tax & Discount -->
+            <div class="card-box mb-4">
+              <div class="section-header-row">
+                <div class="section-icon-wrap purple"><i class="bi bi-percent"></i></div>
+                <h2 class="section-title">Tax & Discount</h2>
+              </div>
+              <div class="mt-3">
+                <label class="form-label-custom">Tax Type</label>
+                <select class="form-input" id="taxType">
+                  <option value="gst18">GST 0%</option>
+                  <option value="gst5">GST 5%</option>
+                  <option value="gst12">GST 12%</option>
+                </select>
+              </div>
+              <div class="mt-3">
+                <label class="form-label-custom">Discount</label>
+                <div class="discount-row">
+                  <input type="number" class="form-input" id="discountVal" placeholder="0" min="0">
+                  <select class="form-input disc-type" id="discountType">
+                    <option value="percent">%</option>
+                    <option value="flat">₹ Flat</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grand Total -->
+            <div class="card-box summary-box mb-4">
+              <div class="summary-line">
+                <span>Subtotal</span>
+                <span id="subtotalDisp">₹0.00</span>
+              </div>
+              <div class="summary-line">
+                <span>Discount</span>
+                <span id="discountDisp" class="text-danger">−₹0.00</span>
+              </div>
+              <div class="summary-line">
+                <span id="taxLabel">GST (18%)</span>
+                <span id="taxDisp">₹0.00</span>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-line grand">
+                <span>Grand Total</span>
+                <span id="grandTotalDisp">₹0.00</span>
+              </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="card-box mb-4">
+              <div class="section-header-row">
+                <div class="section-icon-wrap blue"><i class="bi bi-wallet2"></i></div>
+                <h2 class="section-title">Payment Method</h2>
+              </div>
+              <div class="payment-opts mt-3">
+                <label class="pay-opt" id="payOptCash">
+                  <input type="radio" name="payMethod" value="cash" checked>
+                  <i class="bi bi-cash-stack"></i> Cash
+                </label>
+                <label class="pay-opt" id="payOptUpi">
+                  <input type="radio" name="payMethod" value="upi">
+                  <i class="bi bi-phone"></i> UPI
+                </label>
+                <label class="pay-opt" id="payOptCard">
+                  <input type="radio" name="payMethod" value="card">
+                  <i class="bi bi-credit-card"></i> Card
+                </label>
+              </div>
+              <div class="mt-3">
+                <label class="form-label-custom">Payment Status</label>
+                <select class="form-input" id="payStatus">
+                  <option value="paid">Paid</option>
+                  <option value="pending">Pending</option>
+                  <option value="partial">Partial</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="btn-generate" id="generateBtn">
+              <i class="bi bi-lightning-charge-fill"></i> Generate Invoice
+            </button>
+            <button class="btn-save-draft mt-2">
+              <i class="bi bi-floppy"></i> Save as Draft
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Invoice Preview Modal -->
+<div class="modal fade" id="invoiceModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content invoice-preview-modal">
+      <div class="modal-header">
+        <h5 class="modal-title">Invoice Preview</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="invoicePreviewBody">
+        <!-- Populated by JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary-cta" data-bs-dismiss="modal">Close</button>
+        <button class="btn-primary-cta" onclick="window.print()"><i class="bi bi-printer"></i> Print</button>
+        <button class="btn-primary-cta"><i class="bi bi-download"></i> Download PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Set default dates
+  const today = new Date();
+  document.getElementById('invDate').value = today.toISOString().split('T')[0];
+  const due = new Date(); due.setDate(due.getDate()+14);
+  document.getElementById('dueDate').value = due.toISOString().split('T')[0];
+
+  let rowId = 0;
+
+  function addItem(name='', qty=1, price=0) {
+    rowId++;
+    const id = rowId;
+    const div = document.createElement('div');
+    div.className = 'item-row';
+    div.id = `row-${id}`;
+    div.innerHTML = `
+      <input type="text" class="form-input item-name" placeholder="Product name" value="${name}">
+      <input type="number" class="form-input item-qty" value="${qty}" min="1" oninput="calcRow(${id})">
+      <input type="number" class="form-input item-price" value="${price}" min="0" oninput="calcRow(${id})">
+      <span class="item-total" id="total-${id}">₹${(qty*price).toFixed(2)}</span>
+      <button class="del-row-btn" onclick="delRow(${id})"><i class="bi bi-trash3"></i></button>
+    `;
+    document.getElementById('itemsBody').appendChild(div);
+    calcAll();
+  }
+
+  function delRow(id) {
+    document.getElementById(`row-${id}`).remove();
+    calcAll();
+  }
+
+  function calcRow(id) {
+    const row = document.getElementById(`row-${id}`);
+    const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+    const price = parseFloat(row.querySelector('.item-price').value) || 0;
+    row.querySelector(`#total-${id}`).textContent = `₹${(qty*price).toFixed(2)}`;
+    calcAll();
+  }
+
+  const taxRates = { gst18:18, gst12:12, gst5:5, vat:10, none:0 };
+  const taxLabels = { gst18:'GST (18%)', gst12:'GST (12%)', gst5:'GST (5%)', vat:'VAT (10%)', none:'No Tax' };
+
+  function calcAll() {
+    let sub = 0;
+    document.querySelectorAll('.item-row').forEach(row => {
+      const qty = parseFloat(row.querySelector('.item-qty').value)||0;
+      const price = parseFloat(row.querySelector('.item-price').value)||0;
+      sub += qty*price;
+    });
+    const taxKey = document.getElementById('taxType').value;
+    const taxRate = taxRates[taxKey];
+    const discVal = parseFloat(document.getElementById('discountVal').value)||0;
+    const discType = document.getElementById('discountType').value;
+    const disc = discType==='percent' ? sub*(discVal/100) : discVal;
+    const afterDisc = Math.max(0, sub-disc);
+    const tax = afterDisc*(taxRate/100);
+    const grand = afterDisc+tax;
+
+    document.getElementById('subtotalDisp').textContent = `₹${sub.toFixed(2)}`;
+    document.getElementById('discountDisp').textContent = `−₹${disc.toFixed(2)}`;
+    document.getElementById('taxLabel').textContent = taxLabels[taxKey];
+    document.getElementById('taxDisp').textContent = `₹${tax.toFixed(2)}`;
+    document.getElementById('grandTotalDisp').textContent = `₹${grand.toFixed(2)}`;
+  }
+
+  document.getElementById('addItemBtn').addEventListener('click', ()=>addItem());
+  document.getElementById('taxType').addEventListener('change', calcAll);
+  document.getElementById('discountVal').addEventListener('input', calcAll);
+  document.getElementById('discountType').addEventListener('change', calcAll);
+
+  // Payment option styling
+  document.querySelectorAll('input[name="payMethod"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.querySelectorAll('.pay-opt').forEach(el=>el.classList.remove('selected'));
+      r.closest('.pay-opt').classList.add('selected');
+    });
+  });
+  document.querySelector('.pay-opt').classList.add('selected');
+
+  document.getElementById('generateBtn').addEventListener('click', ()=>{
+    const name = document.getElementById('custName').value || '—';
+    const phone = document.getElementById('custPhone').value || '—';
+    const email = document.getElementById('custEmail').value || '—';
+    const invDate = document.getElementById('invDate').value;
+    const dueDate = document.getElementById('dueDate').value;
+    const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
+    const payStatus = document.getElementById('payStatus').value;
+    const grand = document.getElementById('grandTotalDisp').textContent;
+
+    let rows = '';
+    document.querySelectorAll('.item-row').forEach(row=>{
+      const n=row.querySelector('.item-name').value||'—';
+      const q=row.querySelector('.item-qty').value;
+      const p=row.querySelector('.item-price').value;
+      const t=(parseFloat(q)*parseFloat(p)).toFixed(2);
+      rows+=`<tr><td>${n}</td><td>${q}</td><td>₹${p}</td><td>₹${t}</td></tr>`;
+    });
+
+    document.getElementById('invoicePreviewBody').innerHTML = `
+      <div class="inv-preview">
+        <div class="inv-preview-header">
+          <div class="inv-logo"><i class="bi bi-lightning-charge-fill"></i> BillFlow</div>
+          <div class="inv-meta">
+            <div class="inv-num">#INV-1043</div>
+            <div>Date: ${invDate}</div>
+            <div>Due: ${dueDate}</div>
+          </div>
+        </div>
+        <div class="inv-parties">
+          <div>
+            <div class="inv-section-label">Bill To</div>
+            <strong>${name}</strong><br>${phone}<br>${email}
+          </div>
+          <div>
+            <div class="inv-section-label">Payment</div>
+            <strong>${payMethod.toUpperCase()}</strong><br>
+            <span class="${payStatus==='paid'?'badge-paid':'badge-pending'}">${payStatus.charAt(0).toUpperCase()+payStatus.slice(1)}</span>
+          </div>
+        </div>
+        <table class="inv-items-table">
+          <thead><tr><th>Item</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="inv-totals">
+          <div class="inv-total-row"><span>Subtotal</span><span>${document.getElementById('subtotalDisp').textContent}</span></div>
+          <div class="inv-total-row"><span>Discount</span><span>${document.getElementById('discountDisp').textContent}</span></div>
+          <div class="inv-total-row"><span>${document.getElementById('taxLabel').textContent}</span><span>${document.getElementById('taxDisp').textContent}</span></div>
+          <div class="inv-total-row grand"><span>Grand Total</span><span>${grand}</span></div>
+        </div>
+      </div>
+    `;
+    new bootstrap.Modal(document.getElementById('invoiceModal')).show();
+  });
+
+  // Pre-fill a sample row
+  addItem('Sample Product', 2, 500);
+
+  const invNum = 'INV-' + Date.now().toString().slice(-5);
+    document.getElementById('invNumber').textContent = '#' + invNum;
+</script>
+</body>
+</html>
