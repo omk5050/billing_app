@@ -16,15 +16,43 @@ exports.createInvoice = async (req, res) => {
 
 exports.getInvoices = async (req, res) => {
   try {
-    let invoices;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
 
-    if (req.user.role === 'admin') {
-      invoices = await Invoice.find().populate('createdBy', 'email');
-    } else {
-      invoices = await Invoice.find({ createdBy: req.user._id });
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+
+    if (req.query.status) {
+      filter.status = req.query.status;
     }
 
-    res.json(invoices);
+    if (req.query.customerName) {
+      filter.customerName = {
+        $regex: req.query.customerName,
+        $options: 'i'
+      };
+    }
+
+    if (req.user.role !== 'admin') {
+      filter.createdBy = req.user._id;
+    }
+
+    const invoices = await Invoice.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const total = await Invoice.countDocuments(filter);
+
+    res.json({
+      total,
+      page,
+      limit,
+      pages: Math.ceil(total / limit),
+      data: invoices
+    });
+
   } catch (error) {
     res.status(500).json({ message: 'Error fetching invoices' });
   }
