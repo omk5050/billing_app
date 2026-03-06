@@ -118,3 +118,45 @@ exports.deleteInvoice = async (req, res) => {
     });
   }
 };
+
+const Invoice = require("./invoice.model");
+
+exports.updateInvoice = async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+
+    if (!invoice) {
+      return res.status(404).json({
+        message: "Invoice not found"
+      });
+    }
+
+    // Authorization check
+    if (
+      req.user.role !== "admin" &&
+      invoice.createdBy.toString() !== req.user._id.toString()
+    ) {
+      return res.status(403).json({
+        message: "Forbidden: cannot update this invoice"
+      });
+    }
+
+    invoice.customerName =
+      req.body.customerName || invoice.customerName;
+
+    invoice.amount =
+      req.body.amount || invoice.amount;
+
+    invoice.status =
+      req.body.status || invoice.status;
+
+    const updatedInvoice = await invoice.save();
+
+    res.json(updatedInvoice);
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Error updating invoice"
+    });
+  }
+};
