@@ -1,5 +1,10 @@
-const Invoice = require('./invoice.model');
+const Invoice = require("./invoice.model");
 
+/*
+---------------------------------------------------
+Create Invoice
+---------------------------------------------------
+*/
 exports.createInvoice = async (req, res) => {
   try {
     const invoice = await Invoice.create({
@@ -9,41 +14,55 @@ exports.createInvoice = async (req, res) => {
     });
 
     res.status(201).json(invoice);
+
   } catch (error) {
-    res.status(500).json({ message: 'Error creating invoice' });
+    res.status(500).json({
+      message: "Error creating invoice"
+    });
   }
 };
 
+
+/*
+---------------------------------------------------
+Get Invoices (Pagination + Filtering)
+---------------------------------------------------
+*/
 exports.getInvoices = async (req, res) => {
   try {
+
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 5;
 
     const skip = (page - 1) * limit;
 
     const filter = {};
 
+    // Admin can see all invoices
+    // Normal users only see their own
+    if (req.user.role !== "admin") {
+      filter.createdBy = req.user._id;
+    }
+
+    // Filter by status
     if (req.query.status) {
       filter.status = req.query.status;
     }
 
+    // Filter by customer name (case insensitive)
     if (req.query.customerName) {
       filter.customerName = {
         $regex: req.query.customerName,
-        $options: 'i'
+        $options: "i"
       };
     }
 
-    if (req.user.role !== 'admin') {
-      filter.createdBy = req.user._id;
-    }
+    const total = await Invoice.countDocuments(filter);
 
     const invoices = await Invoice.find(filter)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
-
-    const total = await Invoice.countDocuments(filter);
 
     res.json({
       total,
@@ -54,32 +73,48 @@ exports.getInvoices = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching invoices' });
+    res.status(500).json({
+      message: "Error fetching invoices"
+    });
   }
 };
 
+
+/*
+---------------------------------------------------
+Delete Invoice
+---------------------------------------------------
+*/
 exports.deleteInvoice = async (req, res) => {
   try {
+
     const invoice = await Invoice.findById(req.params.id);
 
     if (!invoice) {
-      return res.status(404).json({ message: 'Invoice not found' });
+      return res.status(404).json({
+        message: "Invoice not found"
+      });
     }
 
-    // Ownership or Admin check
+    // Only admin or owner can delete
     if (
-      req.user.role !== 'admin' &&
+      req.user.role !== "admin" &&
       invoice.createdBy.toString() !== req.user._id.toString()
     ) {
       return res.status(403).json({
-        message: 'Forbidden: cannot delete this invoice'
+        message: "Forbidden: cannot delete this invoice"
       });
     }
 
     await invoice.deleteOne();
 
-    res.json({ message: 'Invoice deleted' });
+    res.json({
+      message: "Invoice deleted"
+    });
+
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting invoice' });
+    res.status(500).json({
+      message: "Error deleting invoice"
+    });
   }
 };
