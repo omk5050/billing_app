@@ -75,6 +75,26 @@ router.put(
   updateInvoice
 );
 
+/*
+PATCH INVOICE
+PATCH /api/invoices/:id/status
+*/
+router.patch(
+  '/:id/status',
+  protect,
+  [
+    param('id')
+      .isMongoId()
+      .withMessage('Invalid invoice ID'),
+
+    body('status')
+      .isIn(['pending', 'paid', 'cancelled', 'overdue'])
+      .withMessage('Invalid status value')
+  ],
+  validate,
+  updateInvoice
+);
+
 
 /*
 DELETE INVOICE
