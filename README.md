@@ -1,22 +1,55 @@
-Authentication
+Completed
 
-Role-based authorization
+Authentication (Register/Login with JWT)
 
-Invoice module
+Protected routes middleware
 
-Ownership enforcement
+Role-based authorization (admin / user)
 
-Validation layer
+Invoice module (CRUD)
 
-Production deployment
+Ownership enforcement (user can only modify their invoices)
+
+Validation layer (express-validator)
+
+Pagination
+
+Filtering
+
+Searching
+
+Invoice status workflow
+
+Production deployment (Render + MongoDB Atlas)
+
+Modular backend architecture
+
+Environment variables configuration
 
 
-Pagination + filtering for invoices
 
-Invoice update endpoint (with ownership rules)
+Still To Be Implemented
 
-Centralized global error handler
+Invoice analytics / reports
 
-Standardized response format
+Sorting for invoices
 
-Frontend integration
+Global error handling middleware
+
+Rate limiting (API protection)
+
+Request logging
+
+Soft delete for invoices
+
+API documentation (Swagger/OpenAPI)
+
+Refresh token authentication
+
+Logout mechanism
+
+Unit / API testing
+
+Caching (Redis optional)
+
+Background jobs (invoice reminders / overdue checks)
