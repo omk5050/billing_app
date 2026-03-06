@@ -37,6 +37,7 @@ exports.getInvoices = async (req, res) => {
 
     const filter = {};
 
+    // Admin sees all invoices
     if (req.user.role !== "admin") {
       filter.createdBy = req.user._id;
     }
@@ -106,8 +107,26 @@ exports.updateInvoice = async (req, res) => {
     invoice.amount =
       req.body.amount || invoice.amount;
 
-    invoice.status =
-      req.body.status || invoice.status;
+    if (req.body.status) {
+
+      const allowedTransitions = {
+        pending: ["paid", "cancelled", "overdue"],
+        overdue: ["paid"],
+        paid: [],
+        cancelled: []
+      };
+
+      const currentStatus = invoice.status;
+      const newStatus = req.body.status;
+
+      if (!allowedTransitions[currentStatus].includes(newStatus)) {
+        return res.status(400).json({
+          message: `Invalid status transition: ${currentStatus} → ${newStatus}`
+        });
+      }
+
+      invoice.status = newStatus;
+    }
 
     const updatedInvoice = await invoice.save();
 

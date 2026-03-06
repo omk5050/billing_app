@@ -39,11 +39,6 @@ router.post(
 /*
 GET ALL INVOICES
 GET /api/invoices
-Supports:
-?page=
-?limit=
-?status=
-?customerName=
 */
 router.get('/', protect, getInvoices);
 
@@ -73,7 +68,7 @@ router.put(
 
     body('status')
       .optional()
-      .isIn(['pending', 'paid', 'cancelled'])
+      .isIn(['pending', 'paid', 'cancelled', 'overdue'])
       .withMessage('Invalid status value')
   ],
   validate,
@@ -96,6 +91,5 @@ router.delete(
   validate,
   deleteInvoice
 );
-
 
 module.exports = router;
