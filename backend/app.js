@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-
 const authRoutes = require('./features/auth/auth.routes');
 const invoiceRoutes = require('./features/invoices/invoice.routes');
+const reportRoutes = require("./features/reports/reports.routes");
 
 const app = express();
 
@@ -15,5 +15,8 @@ app.get('/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use("/api/reports", reportRoutes);
 module.exports = app;
+
+
 
