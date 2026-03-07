@@ -37,15 +37,17 @@ exports.getInvoices = async (req, res) => {
 
     const filter = {};
 
-    // Admin sees all invoices
+    // Ownership control
     if (req.user.role !== "admin") {
       filter.createdBy = req.user._id;
     }
 
+    // Status filter
     if (req.query.status) {
       filter.status = req.query.status;
     }
 
+    // Customer name search
     if (req.query.customerName) {
       filter.customerName = {
         $regex: req.query.customerName,
@@ -53,12 +55,30 @@ exports.getInvoices = async (req, res) => {
       };
     }
 
+    /*
+    -----------------------------------------
+    Sorting Logic
+    -----------------------------------------
+    */
+
+    let sort = { createdAt: -1 };
+
+    if (req.query.sort) {
+      const sortField = req.query.sort;
+
+      if (sortField.startsWith("-")) {
+        sort = { [sortField.substring(1)]: -1 };
+      } else {
+        sort = { [sortField]: 1 };
+      }
+    }
+
     const total = await Invoice.countDocuments(filter);
 
     const invoices = await Invoice.find(filter)
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 });
+      .sort(sort);
 
     res.json({
       total,
