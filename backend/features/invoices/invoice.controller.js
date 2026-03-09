@@ -3,10 +3,12 @@ const Invoice = require("./invoice.model");
 /*
 ---------------------------------------------------
 Create Invoice
+POST /api/invoices
 ---------------------------------------------------
 */
-exports.createInvoice = async (req, res) => {
+exports.createInvoice = async (req, res, next) => {
   try {
+
     const invoice = await Invoice.create({
       customerName: req.body.customerName,
       amount: req.body.amount,
@@ -16,19 +18,20 @@ exports.createInvoice = async (req, res) => {
     res.status(201).json(invoice);
 
   } catch (error) {
-    res.status(500).json({
-      message: "Error creating invoice"
-    });
+    next(error);
   }
 };
 
 
+
 /*
 ---------------------------------------------------
-Get Invoices (Pagination + Filtering)
+Get All Invoices
+GET /api/invoices
+Pagination + Filtering + Sorting
 ---------------------------------------------------
 */
-exports.getInvoices = async (req, res) => {
+exports.getInvoices = async (req, res, next) => {
   try {
 
     const page = parseInt(req.query.page) || 1;
@@ -42,12 +45,12 @@ exports.getInvoices = async (req, res) => {
       filter.createdBy = req.user._id;
     }
 
-    // Status filter
+    // Status filtering
     if (req.query.status) {
       filter.status = req.query.status;
     }
 
-    // Customer name search
+    // Customer search
     if (req.query.customerName) {
       filter.customerName = {
         $regex: req.query.customerName,
@@ -57,20 +60,22 @@ exports.getInvoices = async (req, res) => {
 
     /*
     -----------------------------------------
-    Sorting Logic
+    Sorting
     -----------------------------------------
     */
 
     let sort = { createdAt: -1 };
 
     if (req.query.sort) {
-      const sortField = req.query.sort;
 
-      if (sortField.startsWith("-")) {
-        sort = { [sortField.substring(1)]: -1 };
+      const field = req.query.sort;
+
+      if (field.startsWith("-")) {
+        sort = { [field.substring(1)]: -1 };
       } else {
-        sort = { [sortField]: 1 };
+        sort = { [field]: 1 };
       }
+
     }
 
     const total = await Invoice.countDocuments(filter);
@@ -89,43 +94,84 @@ exports.getInvoices = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      message: "Error fetching invoices"
-    });
+    next(error);
   }
 };
 
 
+
 /*
 ---------------------------------------------------
-Update Invoice
+Get Single Invoice
+GET /api/invoices/:id
 ---------------------------------------------------
 */
-exports.updateInvoice = async (req, res) => {
+exports.getInvoiceById = async (req, res, next) => {
   try {
 
     const invoice = await Invoice.findById(req.params.id);
 
     if (!invoice) {
-      return res.status(404).json({
-        message: "Invoice not found"
-      });
+      res.status(404);
+      throw new Error("Invoice not found");
     }
 
+    // Ownership control
     if (
       req.user.role !== "admin" &&
       invoice.createdBy.toString() !== req.user._id.toString()
     ) {
-      return res.status(403).json({
-        message: "Forbidden: cannot update this invoice"
-      });
+      res.status(403);
+      throw new Error("Forbidden: cannot access this invoice");
     }
 
+    res.json(invoice);
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
+/*
+---------------------------------------------------
+Update Invoice
+PUT /api/invoices/:id
+---------------------------------------------------
+*/
+exports.updateInvoice = async (req, res, next) => {
+  try {
+
+    const invoice = await Invoice.findById(req.params.id);
+
+    if (!invoice) {
+      res.status(404);
+      throw new Error("Invoice not found");
+    }
+
+    // Ownership check
+    if (
+      req.user.role !== "admin" &&
+      invoice.createdBy.toString() !== req.user._id.toString()
+    ) {
+      res.status(403);
+      throw new Error("Forbidden: cannot update this invoice");
+    }
+
+    // Update fields
     invoice.customerName =
       req.body.customerName || invoice.customerName;
 
     invoice.amount =
       req.body.amount || invoice.amount;
+
+
+    /*
+    -----------------------------------------
+    Status Transition Validation
+    -----------------------------------------
+    */
 
     if (req.body.status) {
 
@@ -140,12 +186,14 @@ exports.updateInvoice = async (req, res) => {
       const newStatus = req.body.status;
 
       if (!allowedTransitions[currentStatus].includes(newStatus)) {
-        return res.status(400).json({
-          message: `Invalid status transition: ${currentStatus} → ${newStatus}`
-        });
+        res.status(400);
+        throw new Error(
+          `Invalid status transition: ${currentStatus} → ${newStatus}`
+        );
       }
 
       invoice.status = newStatus;
+
     }
 
     const updatedInvoice = await invoice.save();
@@ -153,36 +201,35 @@ exports.updateInvoice = async (req, res) => {
     res.json(updatedInvoice);
 
   } catch (error) {
-    res.status(500).json({
-      message: "Error updating invoice"
-    });
+    next(error);
   }
 };
+
 
 
 /*
 ---------------------------------------------------
 Delete Invoice
+DELETE /api/invoices/:id
 ---------------------------------------------------
 */
-exports.deleteInvoice = async (req, res) => {
+exports.deleteInvoice = async (req, res, next) => {
   try {
 
     const invoice = await Invoice.findById(req.params.id);
 
     if (!invoice) {
-      return res.status(404).json({
-        message: "Invoice not found"
-      });
+      res.status(404);
+      throw new Error("Invoice not found");
     }
 
+    // Ownership check
     if (
       req.user.role !== "admin" &&
       invoice.createdBy.toString() !== req.user._id.toString()
     ) {
-      return res.status(403).json({
-        message: "Forbidden: cannot delete this invoice"
-      });
+      res.status(403);
+      throw new Error("Forbidden: cannot delete this invoice");
     }
 
     await invoice.deleteOne();
@@ -192,8 +239,6 @@ exports.deleteInvoice = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
-      message: "Error deleting invoice"
-    });
+    next(error);
   }
 };

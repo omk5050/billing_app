@@ -7,6 +7,7 @@ const { validate } = require('../../middleware/validation.middleware');
 const {
   createInvoice,
   getInvoices,
+  getInvoiceById,
   updateInvoice,
   deleteInvoice
 } = require('./invoice.controller');
@@ -44,6 +45,23 @@ router.get('/', protect, getInvoices);
 
 
 /*
+GET SINGLE INVOICE
+GET /api/invoices/:id
+*/
+router.get(
+  '/:id',
+  protect,
+  [
+    param('id')
+      .isMongoId()
+      .withMessage('Invalid invoice ID')
+  ],
+  validate,
+  getInvoiceById
+);
+
+
+/*
 UPDATE INVOICE
 PUT /api/invoices/:id
 */
@@ -75,8 +93,9 @@ router.put(
   updateInvoice
 );
 
+
 /*
-PATCH INVOICE
+PATCH INVOICE STATUS
 PATCH /api/invoices/:id/status
 */
 router.patch(
