@@ -38,12 +38,12 @@ Rate limiting (API protection)
 
 Soft delete for invoices
 
+Request logging
+
 
 
 
 Still To Be Implemented
-
-Request logging
 
 API documentation (Swagger/OpenAPI)
 
