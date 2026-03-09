@@ -1,5 +1,6 @@
 const Invoice = require("./invoice.model");
 
+
 /*
 ---------------------------------------------------
 Create Invoice
@@ -38,7 +39,9 @@ exports.getInvoices = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
 
-    const filter = {};
+    const filter = {
+      isDeleted: false
+    };
 
     // Ownership control
     if (req.user.role !== "admin") {
@@ -111,12 +114,11 @@ exports.getInvoiceById = async (req, res, next) => {
 
     const invoice = await Invoice.findById(req.params.id);
 
-    if (!invoice) {
+    if (!invoice || invoice.isDeleted) {
       res.status(404);
       throw new Error("Invoice not found");
     }
 
-    // Ownership control
     if (
       req.user.role !== "admin" &&
       invoice.createdBy.toString() !== req.user._id.toString()
@@ -145,12 +147,11 @@ exports.updateInvoice = async (req, res, next) => {
 
     const invoice = await Invoice.findById(req.params.id);
 
-    if (!invoice) {
+    if (!invoice || invoice.isDeleted) {
       res.status(404);
       throw new Error("Invoice not found");
     }
 
-    // Ownership check
     if (
       req.user.role !== "admin" &&
       invoice.createdBy.toString() !== req.user._id.toString()
@@ -159,7 +160,6 @@ exports.updateInvoice = async (req, res, next) => {
       throw new Error("Forbidden: cannot update this invoice");
     }
 
-    // Update fields
     invoice.customerName =
       req.body.customerName || invoice.customerName;
 
@@ -209,7 +209,7 @@ exports.updateInvoice = async (req, res, next) => {
 
 /*
 ---------------------------------------------------
-Delete Invoice
+Delete Invoice (SOFT DELETE)
 DELETE /api/invoices/:id
 ---------------------------------------------------
 */
@@ -218,12 +218,11 @@ exports.deleteInvoice = async (req, res, next) => {
 
     const invoice = await Invoice.findById(req.params.id);
 
-    if (!invoice) {
+    if (!invoice || invoice.isDeleted) {
       res.status(404);
       throw new Error("Invoice not found");
     }
 
-    // Ownership check
     if (
       req.user.role !== "admin" &&
       invoice.createdBy.toString() !== req.user._id.toString()
@@ -232,10 +231,14 @@ exports.deleteInvoice = async (req, res, next) => {
       throw new Error("Forbidden: cannot delete this invoice");
     }
 
-    await invoice.deleteOne();
+    // SOFT DELETE
+    invoice.isDeleted = true;
+    invoice.deletedAt = new Date();
+
+    await invoice.save();
 
     res.json({
-      message: "Invoice deleted"
+      message: "Invoice deleted successfully"
     });
 
   } catch (error) {

@@ -34,15 +34,16 @@ Sorting for invoices
 
 Global error handling middleware
 
+Rate limiting (API protection)
+
+Soft delete for invoices
+
+
 
 
 Still To Be Implemented
 
-Rate limiting (API protection)
-
 Request logging
-
-Soft delete for invoices
 
 API documentation (Swagger/OpenAPI)
 

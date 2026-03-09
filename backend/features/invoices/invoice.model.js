@@ -6,20 +6,35 @@ const invoiceSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+
     amount: {
       type: Number,
       required: true
     },
+
     status: {
       type: String,
       enum: ['pending', 'paid', 'cancelled', 'overdue'],
       default: 'pending'
     },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true
+    },
+
+    // SOFT DELETE FIELD
+    isDeleted: {
+      type: Boolean,
+      default: false
+    },
+
+    deletedAt: {
+      type: Date,
+      default: null
     }
+
   },
   { timestamps: true }
 );
