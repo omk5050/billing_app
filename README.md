@@ -40,14 +40,13 @@ Soft delete for invoices
 
 Request logging
 
+Refresh token authentication
 
 
 
 Still To Be Implemented
 
 API documentation (Swagger/OpenAPI)
-
-Refresh token authentication
 
 Unit / API testing
 
