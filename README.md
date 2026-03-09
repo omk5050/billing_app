@@ -26,15 +26,17 @@ Modular backend architecture
 
 Environment variables configuration
 
-
-
-Still To Be Implemented
+Logout mechanism
 
 Invoice analytics / reports
 
 Sorting for invoices
 
 Global error handling middleware
+
+
+
+Still To Be Implemented
 
 Rate limiting (API protection)
 
@@ -45,8 +47,6 @@ Soft delete for invoices
 API documentation (Swagger/OpenAPI)
 
 Refresh token authentication
-
-Logout mechanism
 
 Unit / API testing
 

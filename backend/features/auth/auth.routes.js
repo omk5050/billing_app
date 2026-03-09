@@ -3,13 +3,14 @@ const router = express.Router();
 
 const { register, login, logout } = require('./auth.controller');
 const { protect, authorize } = require('../../middleware/auth.middleware');
+const { authLimiter } = require('../../middleware/rateLimit.middleware');
 
 router.get('/admin-only', protect, authorize('admin'), (req, res) => {
   res.json({ message: 'Welcome Admin' });
 });
 
 router.post('/register', register);
-router.post('/login', login);
+router.post('/login',authLimiter, login);
 router.post('/logout', protect, logout);
 
 router.get('/me', protect, (req, res) => {
