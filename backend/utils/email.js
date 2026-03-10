@@ -1,27 +1,14 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // use STARTTLS
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  tls: {
-    rejectUnauthorized: false
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 module.exports = async function sendEmail(to, subject, text) {
 
-  await transporter.sendMail({
-    from: `"Billing System" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    text
+  await resend.emails.send({
+    from: process.env.EMAIL_FROM,
+    to: to,
+    subject: subject,
+    text: text
   });
 
 };
