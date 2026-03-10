@@ -14,11 +14,32 @@ const {
 
 const { protect } = require('../../middleware/auth.middleware');
 
+/*
+ * @swagger
+ * tags:
+ *   name: Invoices
+ *   description: Invoice management
+ */
+
+
 
 /*
 CREATE INVOICE
 POST /api/invoices
 */
+/**
+/**
+ * @swagger
+ * /api/invoices:
+ *   post:
+ *     summary: Create invoice
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       201:
+ *         description: Invoice created
+ */
 router.post(
   '/',
   protect,
@@ -41,13 +62,6 @@ router.post(
 GET ALL INVOICES
 GET /api/invoices
 */
-router.get('/', protect, getInvoices);
-
-
-/*
-GET SINGLE INVOICE
-GET /api/invoices/:id
-*/
 /**
  * @swagger
  * /api/invoices:
@@ -60,6 +74,14 @@ GET /api/invoices/:id
  *       200:
  *         description: List of invoices
  */
+router.get('/', protect, getInvoices);
+
+
+/*
+GET SINGLE INVOICE
+GET /api/invoices/:id
+*/
+
 router.get(
   '/:id',
   protect,
@@ -77,6 +99,18 @@ router.get(
 UPDATE INVOICE
 PUT /api/invoices/:id
 */
+/**
+ * @swagger
+ * /api/invoices:
+ *   get:
+ *     summary: Get all invoices
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of invoices
+ */
 router.put(
   '/:id',
   protect,
@@ -131,6 +165,18 @@ router.patch(
 DELETE INVOICE
 DELETE /api/invoices/:id
 */
+/**
+ * @swagger
+ * /api/invoices/{id}:
+ *   delete:
+ *     summary: Delete invoice
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Invoice deleted
+ */
 router.delete(
   '/:id',
   protect,
