@@ -1,5 +1,5 @@
-require("./jobs/reminder.job");
 require('dotenv').config();
+require("./jobs/reminder.job");
 
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
