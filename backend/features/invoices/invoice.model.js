@@ -12,11 +12,6 @@ const invoiceSchema = new mongoose.Schema(
       required: true
     },
 
-    customerPhone: {
-      type: String,
-      required: true
-    },
-
     dueDate: {
       type: Date,
       required: true

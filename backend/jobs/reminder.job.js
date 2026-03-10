@@ -1,13 +1,10 @@
 const cron = require("node-cron");
 const Invoice = require("../features/invoices/invoice.model");
 const sendEmail = require("../utils/email");
-const sendSMS = require("../utils/sms");
 
 /*
----------------------------------------
 Invoice Reminder Job
-Runs every minute (for testing)
----------------------------------------
+Runs every minute for testing
 */
 
 cron.schedule("* * * * *", async () => {
@@ -24,37 +21,25 @@ cron.schedule("* * * * *", async () => {
       isDeleted: false
     });
 
-    console.log(`Found ${invoices.length} pending invoices`);
+    console.log(`Found ${invoices.length} invoices`);
 
     for (const invoice of invoices) {
 
       const message = `
 Invoice Reminder
 
+Customer: ${invoice.customerName}
 Amount: ₹${invoice.amount}
 Due Date: ${invoice.dueDate}
 
 Please complete your payment.
 `;
 
-      /* EMAIL */
-
       await sendEmail(
         invoice.customerEmail,
         "Invoice Payment Reminder",
         message
       );
-
-      console.log(`Email sent to ${invoice.customerEmail}`);
-
-      /* SMS */
-
-      await sendSMS(
-        invoice.customerPhone,
-        `Invoice reminder: ₹${invoice.amount} due.`
-      );
-
-      console.log(`SMS sent to ${invoice.customerPhone}`);
 
     }
 
