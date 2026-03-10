@@ -12,6 +12,28 @@ const { protect, authorize } = require('../../middleware/auth.middleware');
 
 
 router.post('/register',register);
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ */
 router.post('/login',login);
 router.post('/refresh-token',refreshToken);
 router.post('/logout',protect,logout);

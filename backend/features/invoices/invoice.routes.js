@@ -48,6 +48,18 @@ router.get('/', protect, getInvoices);
 GET SINGLE INVOICE
 GET /api/invoices/:id
 */
+/**
+ * @swagger
+ * /api/invoices:
+ *   get:
+ *     summary: Get all invoices
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of invoices
+ */
 router.get(
   '/:id',
   protect,

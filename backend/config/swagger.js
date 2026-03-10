@@ -3,11 +3,13 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const options = {
   definition: {
     openapi: '3.0.0',
+
     info: {
       title: 'Billing API',
       version: '1.0.0',
-      description: 'REST API documentation for Billing System'
+      description: 'REST API documentation for the Billing System'
     },
+
     servers: [
       {
         url: 'https://billing-app-o5vw.onrender.com',
@@ -15,7 +17,23 @@ const options = {
       },
       {
         url: 'http://localhost:5000',
-        description: 'Local server'
+        description: 'Local development server'
+      }
+    ],
+
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+
+    security: [
+      {
+        bearerAuth: []
       }
     ]
   },
