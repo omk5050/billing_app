@@ -12,7 +12,10 @@ exports.createInvoice = async (req, res, next) => {
 
     const invoice = await Invoice.create({
       customerName: req.body.customerName,
+      customerEmail: req.body.customerEmail,
       amount: req.body.amount,
+      status: req.body.status || "pending",
+      dueDate: req.body.dueDate,
       createdBy: req.user._id
     });
 
