@@ -1,4 +1,6 @@
+require("./jobs/reminder.job");
 require('dotenv').config();
+
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const app = require('./app');
