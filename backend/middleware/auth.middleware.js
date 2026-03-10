@@ -2,41 +2,41 @@ const jwt = require('jsonwebtoken');
 const User = require('../features/auth/auth.model');
 
 
-exports.protect = async (req,res,next)=>{
-try{
+exports.protect = async (req, res, next) => {
+    try {
 
-let token;
+        let token;
 
-if(
-req.headers.authorization &&
-req.headers.authorization.startsWith('Bearer')
-){
-token = req.headers.authorization.split(' ')[1];
-}
+        if (
+            req.headers.authorization &&
+            req.headers.authorization.startsWith('Bearer')
+        ) {
+            token = req.headers.authorization.split(' ')[1];
+        }
 
-if(!token){
-res.status(401);
-throw new Error("Not authorized");
-}
+        if (!token) {
+            res.status(401);
+            throw new Error("Not authorized");
+        }
 
-const decoded = jwt.verify(token,process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-req.user = await User.findById(decoded.id).select('-password');
+        req.user = await User.findById(decoded.id).select('-password');
 
-next();
+        next();
 
-}catch(error){
-next(error);
-}
+    } catch (error) {
+        next(error);
+    }
 };
 
 
-exports.authorize = (...roles)=>{
-return (req,res,next)=>{
-if(!roles.includes(req.user.role)){
-res.status(403);
-throw new Error("Forbidden");
-}
-next();
-};
+exports.authorize = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            res.status(403);
+            throw new Error("Forbidden");
+        }
+        next();
+    };
 };

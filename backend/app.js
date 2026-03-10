@@ -6,6 +6,8 @@ const reportRoutes = require("./features/reports/reports.routes");
 const errorHandler = require("./middleware/error.middleware");
 const { apiLimiter } = require('./middleware/rateLimit.middleware');  
 const logger = require('./middleware/logger.middleware');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 
 const app = express();
 
@@ -16,6 +18,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/auth', authRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use("/api/reports", reportRoutes);
