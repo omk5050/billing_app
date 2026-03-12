@@ -42,6 +42,6 @@ app.use("/api/reports", reportRoutes);
 app.use(errorHandler);
 
 /* Customers */
-app.use("/api", customerRoutes)
+app.use("/api", customerRoutes);
 
 module.exports = app;
