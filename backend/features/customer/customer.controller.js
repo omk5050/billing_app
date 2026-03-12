@@ -1,3 +1,4 @@
+const Invoice = require("../invoices/invoice.model");
 exports.getCustomers = async (req, res) => {
   try {
 
