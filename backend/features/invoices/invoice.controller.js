@@ -9,11 +9,11 @@ POST /api/invoices
 */
 exports.createInvoice = async (req, res, next) => {
   try {
-
-const invoice = await Invoice.create({
-  ...req.body,
-  createdBy: req.user._id
-});
+    console.log(req.body);
+    const invoice = await Invoice.create({
+      ...req.body,
+      createdBy: req.user._id
+    });
 
     res.status(201).json(invoice);
 
