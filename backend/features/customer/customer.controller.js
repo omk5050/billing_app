@@ -1,4 +1,5 @@
 const Invoice = require("../invoices/invoice.model");
+
 exports.getCustomers = async (req, res) => {
   try {
 
@@ -28,11 +29,11 @@ exports.getCustomers = async (req, res) => {
           totalAmount: 1
         }
       }
-    ])
+    ]);
 
-    res.json(customers)
+    res.json(customers);
 
   } catch (error) {
-    res.status(500).json({ message: "Failed to load customers" })
+    res.status(500).json({ message: "Failed to fetch customers" });
   }
-}
+};
