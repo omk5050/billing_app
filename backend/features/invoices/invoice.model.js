@@ -12,9 +12,7 @@ const invoiceSchema = new mongoose.Schema(
     required: true
   },
 
-  phone: {
-    type: String
-  },
+  phone: String,
 
   invoiceDate: {
     type: Date,
@@ -28,12 +26,10 @@ const invoiceSchema = new mongoose.Schema(
 
   paymentMethod: {
     type: String,
-    enum: ['cash','upi','card']
+    enum: ["cash","upi","card"]
   },
 
-  notes: {
-    type: String
-  },
+  notes: String,
 
   items: [
     {
