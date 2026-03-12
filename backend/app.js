@@ -4,6 +4,7 @@ const cors = require("cors");
 const authRoutes = require("./features/auth/auth.routes");
 const invoiceRoutes = require("./features/invoices/invoice.routes");
 const reportRoutes = require("./features/reports/reports.routes");
+const customerRoutes = require("./routes/customer.routes")
 
 const errorHandler = require("./middleware/error.middleware");
 const { apiLimiter } = require("./middleware/rateLimit.middleware");
@@ -39,5 +40,8 @@ app.use("/api/reports", reportRoutes);
 
 /* Global error handler */
 app.use(errorHandler);
+
+/* Customers */
+app.use("/api/customer", customerRoutes)
 
 module.exports = app;
