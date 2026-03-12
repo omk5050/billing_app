@@ -11,12 +11,26 @@ exports.createInvoice = async (req, res, next) => {
   try {
 
     const invoice = await Invoice.create({
+
       customerName: req.body.customerName,
       customerEmail: req.body.customerEmail,
-      amount: req.body.amount,
-      status: req.body.status || "pending",
+      phone: req.body.phone,
+
+      invoiceDate: req.body.invoiceDate,
       dueDate: req.body.dueDate,
+
+      items: req.body.items,
+
+      paymentMethod: req.body.paymentMethod,
+
+      notes: req.body.notes,
+
+      amount: req.body.amount,
+
+      status: req.body.status || "pending",
+
       createdBy: req.user._id
+
     });
 
     res.status(201).json(invoice);
