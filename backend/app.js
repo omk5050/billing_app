@@ -4,7 +4,7 @@ const cors = require("cors");
 const authRoutes = require("./features/auth/auth.routes");
 const invoiceRoutes = require("./features/invoices/invoice.routes");
 const reportRoutes = require("./features/reports/reports.routes");
-const customerRoutes = require("./feaatures/customer/customer.routes")
+const customerRoutes = require("./features/customer/customer.routes")
 
 const errorHandler = require("./middleware/error.middleware");
 const { apiLimiter } = require("./middleware/rateLimit.middleware");
