@@ -46,7 +46,7 @@ exports.getCustomers = async (req, res, next) => {
 
 
 
-exports.createInvoice = async (req, res, next) => {
+exports.createCustomer = async (req, res, next) => {
 
   try {
 
