@@ -46,25 +46,73 @@ exports.getCustomers = async (req, res, next) => {
 
 
 
-exports.createCustomer = async (req, res, next) => {
+exports.createInvoice = async (req, res, next) => {
 
   try {
 
-    const customer = await Customer.create({
+    const {
+      customerName,
+      customerEmail,
+      phone,
+      invoiceDate,
+      dueDate,
+      items,
+      paymentMethod,
+      status,
+      amount
+    } = req.body;
 
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-      address: req.body.address,
+
+    /* ------------------------------
+       AUTO CREATE CUSTOMER
+    --------------------------------*/
+
+    let customer = await Customer.findOne({
+      email: customerEmail,
+      createdBy: req.user._id
+    });
+
+    if (!customer) {
+
+      customer = await Customer.create({
+        name: customerName,
+        email: customerEmail,
+        phone: phone,
+        createdBy: req.user._id
+      });
+
+    }
+
+
+    /* ------------------------------
+       CREATE INVOICE
+    --------------------------------*/
+
+    const invoice = await Invoice.create({
+
+      customerName,
+      customerEmail,
+      phone,
+
+      invoiceDate,
+      dueDate,
+
+      items,
+
+      paymentMethod,
+      status: status || "pending",
+
+      amount,
 
       createdBy: req.user._id
 
     });
 
-    res.status(201).json(customer);
 
-  } catch (err) {
-    next(err);
+    res.status(201).json(invoice);
+
+  } catch (error) {
+    next(error);
   }
 
 };
