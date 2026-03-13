@@ -1,39 +1,70 @@
+const Customer = require("./customer.model");
 const Invoice = require("../invoices/invoice.model");
 
-exports.getCustomers = async (req, res) => {
+exports.getCustomers = async (req, res, next) => {
+
   try {
 
-    const customers = await Invoice.aggregate([
-      {
-        $match: {
-          createdBy: req.user._id,
-          isDeleted: false
-        }
-      },
-      {
-        $group: {
-          _id: {
-            name: "$customerName",
-            email: "$customerEmail"
-          },
-          totalInvoices: { $sum: 1 },
-          totalAmount: { $sum: "$amount" }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          name: "$_id.name",
-          email: "$_id.email",
-          totalInvoices: 1,
-          totalAmount: 1
-        }
-      }
-    ]);
+    const customers = await Customer.find({
+      createdBy: req.user._id,
+      isDeleted: false
+    });
 
-    res.json(customers);
+    const result = await Promise.all(
 
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch customers" });
+      customers.map(async (c) => {
+
+        const invoices = await Invoice.find({
+          customerEmail: c.email
+        });
+
+        const totalInvoices = invoices.length;
+
+        const totalAmount = invoices.reduce(
+          (sum, i) => sum + i.amount,
+          0
+        );
+
+        return {
+          _id: c._id,
+          name: c.name,
+          email: c.email,
+          phone: c.phone,
+          totalInvoices,
+          totalAmount
+        };
+
+      })
+    );
+
+    res.json(result);
+
+  } catch (err) {
+    next(err);
   }
+};
+
+
+
+exports.createCustomer = async (req, res, next) => {
+
+  try {
+
+    const customer = await Customer.create({
+
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address,
+
+      createdBy: req.user._id
+
+    });
+
+    res.status(201).json(customer);
+
+  } catch (err) {
+    next(err);
+  }
+
 };
