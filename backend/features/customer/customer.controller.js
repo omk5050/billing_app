@@ -5,10 +5,19 @@ exports.getCustomers = async (req, res, next) => {
 
   try {
 
-    const customers = await Customer.find({
-      createdBy: req.user._id,
-      isDeleted: false
-    });
+    const customers = await Invoice.aggregate([
+      { $match: { createdBy: req.user._id } },
+      {
+        $group: {
+          _id: "$customerEmail",
+          name: { $first: "$customerName" },
+          email: { $first: "$customerEmail" },
+          phone: { $first: "$phone" },
+          totalInvoices: { $sum: 1 },
+          totalAmount: { $sum: "$amount" }
+        }
+      }
+    ]);
 
     const result = await Promise.all(
 
