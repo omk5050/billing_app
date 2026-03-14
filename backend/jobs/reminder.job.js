@@ -4,49 +4,45 @@ const sendEmail = require("../utils/email");
 
 /*
 Invoice Reminder Job
-Runs every minute for testing
+Runs every day at 9:00 AM
 */
 
-cron.schedule("* * * * *", async () => {
-
+cron.schedule("0 9 * * *", async () => {
   try {
-
-    console.log("Running invoice reminder job");
+    console.log("Running daily invoice reminder job...");
 
     const today = new Date();
 
+    // Find invoices that are pending and past their due date
     const invoices = await Invoice.find({
       status: "pending",
       dueDate: { $lte: today },
       isDeleted: false
     });
 
-    console.log(`Found ${invoices.length} invoices`);
+    console.log(`Found ${invoices.length} overdue invoices.`);
 
     for (const invoice of invoices) {
-
       const message = `
-Invoice Reminder
+Hello ${invoice.customerName},
 
-Customer: ${invoice.customerName}
-Amount: ₹${invoice.amount}
-Due Date: ${invoice.dueDate}
+This is a friendly reminder that your payment of ₹${invoice.amount} was due on ${new Date(invoice.dueDate).toLocaleDateString('en-IN')}.
 
-Please complete your payment.
+Please complete your payment as soon as possible.
+
+Thank you!
 `;
 
       await sendEmail(
         invoice.customerEmail,
-        "Invoice Payment Reminder",
+        "Invoice Payment Reminder - Overdue",
         message
       );
-
     }
 
+    console.log("Finished sending daily reminders.");
+
   } catch (error) {
-
     console.error("Reminder job error:", error);
-
   }
-
 });
