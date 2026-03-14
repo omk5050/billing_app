@@ -1,53 +1,26 @@
-const cron = require("node-cron");
-const Invoice = require("../features/invoices/invoice.model");
-const sendEmail = require("../utils/email");
+require("dotenv").config();
 
-/*
-SAFE TESTING MODE
-Runs every minute. Sends ALL emails to the developer.
-*/
-cron.schedule("* * * * *", async () => {
-  try {
-    console.log("Running TEST reminder job...");
-    const today = new Date();
+const dns = require("dns");
+dns.setDefaultResultOrder("ipv4first");
 
-    const invoices = await Invoice.find({
-      status: "pending",
-      dueDate: { $lte: today },
-      isDeleted: false
-    });
+const mongoose = require("mongoose");
+const app = require("./app");
 
-    console.log(`Found ${invoices.length} overdue invoices for testing.`);
+/* Background Jobs */
+require("./jobs/reminder.job");
 
-    for (const invoice of invoices) {
-      const message = `
-Hello ${invoice.customerName},
+/* MongoDB Connection */
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB Connected");
+  })
+  .catch((err) => {
+    console.error("Mongo Error:", err);
+  });
 
-This is a friendly reminder that your payment of ₹${invoice.amount} was due on ${new Date(invoice.dueDate).toLocaleDateString('en-IN')}.
+/* Start Server */
+const PORT = process.env.PORT || 5000;
 
-Please complete your payment as soon as possible.
-
-Thank you!
-      `;
-
-      // 🛑 SAFE TESTING OVERRIDE: 
-      // Sends to your email instead of the customer's email!
-      const myTestEmail = "darklight509612@gmail.com"; 
-
-      await sendEmail(
-        myTestEmail, 
-        `[TEST] Invoice Payment Reminder for ${invoice.customerName}`,
-        message
-      );
-
-      // Update the status
-      invoice.status = "overdue";
-      await invoice.save();
-
-      console.log(`Test email sent to you for: ${invoice.customerName}`);
-    }
-
-  } catch (error) {
-    console.error("Reminder job error:", error);
-  }
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

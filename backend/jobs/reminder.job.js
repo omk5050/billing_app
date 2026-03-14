@@ -3,24 +3,21 @@ const Invoice = require("../features/invoices/invoice.model");
 const sendEmail = require("../utils/email");
 
 /*
-Invoice Reminder Job
-Runs every day at 9:00 AM
+SAFE TESTING MODE
+Runs every minute. Sends ALL emails to the developer.
 */
-
-cron.schedule("0 9 * * *", async () => {
+cron.schedule("* * * * *", async () => {
   try {
-    console.log("Running daily invoice reminder job...");
-
+    console.log("Running TEST reminder job...");
     const today = new Date();
 
-    // Find invoices that are pending and past their due date
     const invoices = await Invoice.find({
       status: "pending",
       dueDate: { $lte: today },
       isDeleted: false
     });
 
-    console.log(`Found ${invoices.length} overdue invoices.`);
+    console.log(`Found ${invoices.length} overdue invoices for testing.`);
 
     for (const invoice of invoices) {
       const message = `
@@ -31,16 +28,24 @@ This is a friendly reminder that your payment of ₹${invoice.amount} was due on
 Please complete your payment as soon as possible.
 
 Thank you!
-`;
+      `;
+
+      // 🛑 SAFE TESTING OVERRIDE: 
+      // Sends to your email instead of the customer's email!
+      const myTestEmail = "darklight509612@gmail.com"; 
 
       await sendEmail(
-        invoice.customerEmail,
-        "Invoice Payment Reminder - Overdue",
+        myTestEmail, 
+        `[TEST] Invoice Payment Reminder for ${invoice.customerName}`,
         message
       );
-    }
 
-    console.log("Finished sending daily reminders.");
+      // Update the status
+      invoice.status = "overdue";
+      await invoice.save();
+
+      console.log(`Test email sent to you for: ${invoice.customerName}`);
+    }
 
   } catch (error) {
     console.error("Reminder job error:", error);
