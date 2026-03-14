@@ -33,7 +33,6 @@ Pagination + Filtering + Sorting
 */
 exports.getInvoices = async (req, res, next) => {
   try {
-
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
@@ -53,11 +52,36 @@ exports.getInvoices = async (req, res, next) => {
     }
 
     // Customer search
-    if (req.query.customerName) {
-      filter.customerName = {
-        $regex: req.query.customerName,
-        $options: "i"
-      };
+    if (req.query.search) {
+      const searchRegex = { $regex: req.query.search, $options: "i" };
+      
+      const orConditions = [
+        { customerName: searchRegex },
+        { customerEmail: searchRegex }
+      ];
+
+      // Only add _id to search if it is a valid 24-character MongoDB ID
+      if (req.query.search.match(/^[0-9a-fA-F]{24}$/)) {
+        orConditions.push({ _id: req.query.search });
+      }
+
+      filter.$or = orConditions;
+    }
+
+    // Date filtering (NEW)
+    if (req.query.startDate || req.query.endDate) {
+      filter.createdAt = {};
+      
+      if (req.query.startDate) {
+        filter.createdAt.$gte = new Date(req.query.startDate);
+      }
+      
+      if (req.query.endDate) {
+        // Set to the very end of the day so it includes all invoices from that day
+        const end = new Date(req.query.endDate);
+        end.setUTCHours(23, 59, 59, 999);
+        filter.createdAt.$lte = end;
+      }
     }
 
     /*
@@ -65,24 +89,21 @@ exports.getInvoices = async (req, res, next) => {
     Sorting
     -----------------------------------------
     */
-
     let sort = { createdAt: -1 };
 
     if (req.query.sort) {
-
       const field = req.query.sort;
-
       if (field.startsWith("-")) {
         sort = { [field.substring(1)]: -1 };
       } else {
         sort = { [field]: 1 };
       }
-
     }
 
     const total = await Invoice.countDocuments(filter);
 
     const invoices = await Invoice.find(filter)
+      .lean()
       .skip(skip)
       .limit(limit)
       .sort(sort);

@@ -1,15 +1,26 @@
 const Invoice = require("../invoices/invoice.model");
 
 /*
------------------------------------------
-Total Revenue
------------------------------------------
+--------------------------------------------------
+TOTAL REVENUE
 GET /api/reports/total-revenue
+--------------------------------------------------
 */
 exports.getTotalRevenue = async (req, res) => {
+
   try {
+
+    const match = {
+      status: "paid",
+      isDeleted: false
+    };
+
+    if (req.user.role !== "admin") {
+      match.createdBy = req.user._id;
+    }
+
     const result = await Invoice.aggregate([
-      { $match: { status: "paid" } },
+      { $match: match },
       {
         $group: {
           _id: null,
@@ -23,47 +34,69 @@ exports.getTotalRevenue = async (req, res) => {
     res.json({ totalRevenue });
 
   } catch (error) {
+
     res.status(500).json({
       message: "Error calculating total revenue"
     });
+
   }
+
 };
 
 
 
 /*
------------------------------------------
-Invoice Count
------------------------------------------
+--------------------------------------------------
+INVOICE COUNT
 GET /api/reports/invoice-count
+--------------------------------------------------
 */
 exports.getInvoiceCount = async (req, res) => {
+
   try {
-    const count = await Invoice.countDocuments();
+
+    const filter = { isDeleted: false };
+
+    if (req.user.role !== "admin") {
+      filter.createdBy = req.user._id;
+    }
+
+    const count = await Invoice.countDocuments(filter);
 
     res.json({
       totalInvoices: count
     });
 
   } catch (error) {
+
     res.status(500).json({
       message: "Error fetching invoice count"
     });
+
   }
+
 };
 
 
 
 /*
------------------------------------------
-Status Breakdown
------------------------------------------
+--------------------------------------------------
+STATUS BREAKDOWN
 GET /api/reports/status-breakdown
+--------------------------------------------------
 */
 exports.getStatusBreakdown = async (req, res) => {
+
   try {
 
+    const match = { isDeleted: false };
+
+    if (req.user.role !== "admin") {
+      match.createdBy = req.user._id;
+    }
+
     const result = await Invoice.aggregate([
+      { $match: match },
       {
         $group: {
           _id: "$status",
@@ -75,25 +108,38 @@ exports.getStatusBreakdown = async (req, res) => {
     res.json(result);
 
   } catch (error) {
+
     res.status(500).json({
       message: "Error generating status report"
     });
+
   }
+
 };
 
 
 
 /*
------------------------------------------
-Monthly Revenue
------------------------------------------
+--------------------------------------------------
+MONTHLY REVENUE
 GET /api/reports/monthly-revenue
+--------------------------------------------------
 */
 exports.getMonthlyRevenue = async (req, res) => {
+
   try {
 
+    const match = {
+      status: "paid",
+      isDeleted: false
+    };
+
+    if (req.user.role !== "admin") {
+      match.createdBy = req.user._id;
+    }
+
     const result = await Invoice.aggregate([
-      { $match: { status: "paid" } },
+      { $match: match },
       {
         $group: {
           _id: {
@@ -114,8 +160,54 @@ exports.getMonthlyRevenue = async (req, res) => {
     res.json(result);
 
   } catch (error) {
+
     res.status(500).json({
       message: "Error calculating monthly revenue"
     });
+
   }
+
+};
+
+
+
+/*
+--------------------------------------------------
+PAYMENT METHOD BREAKDOWN
+GET /api/reports/payment-methods
+--------------------------------------------------
+*/
+exports.getPaymentMethods = async (req, res) => {
+
+  try {
+
+    const match = {
+      status: "paid",
+      isDeleted: false
+    };
+
+    if (req.user.role !== "admin") {
+      match.createdBy = req.user._id;
+    }
+
+    const result = await Invoice.aggregate([
+      { $match: match },
+      {
+        $group: {
+          _id: "$paymentMethod",
+          total: { $sum: "$amount" }
+        }
+      }
+    ]);
+
+    res.json(result);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: "Error calculating payment methods"
+    });
+
+  }
+
 };
