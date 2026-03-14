@@ -42,14 +42,22 @@ Request logging
 
 Refresh token authentication
 
+Background jobs (invoice reminders / overdue checks)
+
 
 
 Still To Be Implemented
 
-API documentation (Swagger/OpenAPI)
-
 Unit / API testing
 
-Caching (Redis optional)
 
-Background jobs (invoice reminders / overdue checks)
+Store JWT tokens
+
+Connect invoices page
+
+Connect create invoice
+
+Connect dashboard KPIs
+
+Connect reports charts
+

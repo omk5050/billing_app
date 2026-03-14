@@ -1,128 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BillFlow – Customers</title>
+
+  <script>
+    if (!localStorage.getItem("accessToken")) {
+      window.location.href = "login.html"
+    }
+  </script>
+
+  <script src="assets/js/api.js"></script>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
-<div class="app-shell d-flex">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
-      <span class="brand-name">BillFlow</span>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="index.html" class="nav-item"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
-      <a href="create-invoice.html" class="nav-item"><i class="bi bi-plus-square"></i><span>Create Invoice</span></a>
-      <a href="invoices.html" class="nav-item"><i class="bi bi-receipt"></i><span>Invoices</span></a>
-      <a href="customers.html" class="nav-item active"><i class="bi bi-people"></i><span>Patient</span></a>
-      <a href="reports.html" class="nav-item"><i class="bi bi-bar-chart-line"></i><span>Reports</span></a>
-      <a href="settings.html" class="nav-item"><i class="bi bi-gear"></i><span>Settings</span></a>
-    </nav>
-    <div class="sidebar-footer">
+
+  <div class="app-shell d-flex">
+
+    <aside class="sidebar">
+
+      <div class="sidebar-brand">
+        <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+        <span class="brand-name">BillFlow</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+        <a href="create-invoice.html" class="nav-item"><i class="bi bi-plus-square"></i><span>Create Invoice</span></a>
+        <a href="invoices.html" class="nav-item"><i class="bi bi-receipt"></i><span>Invoices</span></a>
+        <a href="customers.html" class="nav-item active"><i class="bi bi-people"></i><span>Patient</span></a>
+        <a href="reports.html" class="nav-item"><i class="bi bi-bar-chart-line"></i><span>Reports</span></a>
+        <a href="settings.html" class="nav-item"><i class="bi bi-gear"></i><span>Settings</span></a>
+      </nav>
+
+      <div class="sidebar-footer">
       <div class="user-avatar">A</div>
-      <div><div class="user-name">Admin</div><div class="user-role">Super Admin</div></div>
-    </div>
+
+      <div>
+        <div class="user-name">Admin</div>
+        <div class="user-role">Super Admin</div>
+
+        <button onclick="logout()" class="logout-btn">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
+  </div>
+
   </aside>
 
+
   <main class="main-content">
+
     <header class="topbar">
+
       <div>
         <h1 class="page-title">Customers</h1>
         <p class="page-sub">Manage your customer database.</p>
       </div>
+
       <div class="topbar-actions">
         <button class="btn-primary-cta" data-bs-toggle="modal" data-bs-target="#addCustModal">
           <i class="bi bi-person-plus"></i> Add Customer
         </button>
       </div>
+
     </header>
 
+
     <div class="page-body">
+
       <div class="filter-bar card-box mb-4">
+
         <div class="filter-search">
           <i class="bi bi-search"></i>
           <input type="text" id="custSearch" placeholder="Search customers..." oninput="filterCustomers()">
         </div>
+
       </div>
+
 
       <div class="customers-grid" id="customersGrid"></div>
+
     </div>
+
   </main>
-</div>
 
-<!-- Add Customer Modal -->
-<div class="modal fade" id="addCustModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content invoice-preview-modal">
-      <div class="modal-header">
-        <h5 class="modal-title">Add New Customer</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row g-3">
-          <div class="col-12"><label class="form-label-custom">Full Name</label><input class="form-input" placeholder="Customer name"></div>
-          <div class="col-6"><label class="form-label-custom">Phone</label><input class="form-input" placeholder="+91 ..."></div>
-          <div class="col-6"><label class="form-label-custom">Email</label><input class="form-input" placeholder="email@example.com"></div>
-          <div class="col-12"><label class="form-label-custom">Address</label><textarea class="form-input" rows="2" placeholder="Address"></textarea></div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary-cta" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn-primary-cta" data-bs-dismiss="modal"><i class="bi bi-check-lg"></i> Save Customer</button>
-      </div>
-    </div>
   </div>
+
+
+
+  <!-- Add Customer Modal -->
+
+  <div class="modal fade" id="addCustModal" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+      <div class="modal-content invoice-preview-modal">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Customer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <div class="row g-3">
+
+            <div class="col-12">
+              <label class="form-label-custom">Full Name</label>
+              <input class="form-input" placeholder="Customer name">
+            </div>
+
+            <div class="col-6">
+              <label class="form-label-custom">Phone</label>
+              <input class="form-input" placeholder="+91 ...">
+            </div>
+
+            <div class="col-6">
+              <label class="form-label-custom">Email</label>
+              <input class="form-input" placeholder="email@example.com">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Address</label>
+              <textarea class="form-input" rows="2" placeholder="Address"></textarea>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-secondary-cta" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn-primary-cta" data-bs-dismiss="modal">
+            <i class="bi bi-check-lg"></i> Save Customer
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+  <script>
+
+    let customers = []
+    let filteredC = []
+
+    async function loadCustomers() {
+
+      try {
+
+        const data = await apiRequest("/api/customers")
+
+        customers = data.map(c => ({
+
+          name: c.name,
+          email: c.email,
+          phone: c.phone || "-",
+          invoices: c.totalInvoices,
+          total: "₹" + Number(c.totalAmount).toFixed(2),
+          status: "active",
+
+          initials: c.name
+            .split(" ")
+            .map(n => n[0])
+            .join("")
+            .substring(0, 2)
+
+        }))
+
+        filteredC = [...customers]
+
+        renderCustomers()
+
+      } catch (err) {
+
+        console.error(err)
+
+      }
+
+    }
+
+
+
+    function filterCustomers() {
+
+      const q = document.getElementById('custSearch').value.toLowerCase()
+
+      filteredC = customers.filter(c =>
+        c.name.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q)
+      )
+
+      renderCustomers()
+
+    }
+
+
+
+    function renderCustomers() {
+
+      document.getElementById('customersGrid').innerHTML =
+        filteredC.map(c => `
+
+<div class="customer-card">
+
+<div class="cust-avatar">${c.initials}</div>
+
+<div class="cust-info">
+
+<div class="cust-name">${c.name}</div>
+
+<div class="cust-contact">
+<i class="bi bi-envelope"></i> ${c.email}
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-const customers = [
-  {name:'Rahul Sharma',email:'rahul@example.com',phone:'+91 98765 43210',invoices:8,total:'₹24,500',status:'active',initials:'RS'},
-  {name:'Priya Mehta',email:'priya@example.com',phone:'+91 87654 32109',invoices:3,total:'₹8,200',status:'pending',initials:'PM'},
-  {name:'Arjun Kapoor',email:'arjun@example.com',phone:'+91 76543 21098',invoices:12,total:'₹52,800',status:'active',initials:'AK'},
-  {name:'Sneha Reddy',email:'sneha@example.com',phone:'+91 65432 10987',invoices:2,total:'₹3,600',status:'pending',initials:'SR'},
-  {name:'Kiran Patel',email:'kiran@example.com',phone:'+91 54321 09876',invoices:6,total:'₹18,900',status:'active',initials:'KP'},
-  {name:'Meera Nair',email:'meera@example.com',phone:'+91 43210 98765',invoices:4,total:'₹9,800',status:'overdue',initials:'MN'},
-  {name:'Rohan Singh',email:'rohan@example.com',phone:'+91 32109 87654',invoices:7,total:'₹31,200',status:'active',initials:'RS'},
-  {name:'Divya Kumar',email:'divya@example.com',phone:'+91 21098 76543',invoices:1,total:'₹650',status:'active',initials:'DK'},
-];
+<div class="cust-contact">
+<i class="bi bi-telephone"></i> ${c.phone}
+</div>
 
-let filteredC = [...customers];
+</div>
 
-function filterCustomers() {
-  const q = document.getElementById('custSearch').value.toLowerCase();
-  filteredC = customers.filter(c => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q));
-  renderCustomers();
-}
+<div class="cust-stats">
 
-function renderCustomers() {
-  document.getElementById('customersGrid').innerHTML = filteredC.map(c => `
-    <div class="customer-card">
-      <div class="cust-avatar">${c.initials}</div>
-      <div class="cust-info">
-        <div class="cust-name">${c.name}</div>
-        <div class="cust-contact"><i class="bi bi-envelope"></i> ${c.email}</div>
-        <div class="cust-contact"><i class="bi bi-telephone"></i> ${c.phone}</div>
-      </div>
-      <div class="cust-stats">
-        <div class="cust-stat"><span class="cust-stat-val">${c.invoices}</span><span class="cust-stat-label">Invoices</span></div>
-        <div class="cust-stat"><span class="cust-stat-val">${c.total}</span><span class="cust-stat-label">Total</span></div>
-      </div>
-      <div class="cust-footer">
-        <span class="${c.status==='active'?'badge-paid':c.status==='pending'?'badge-pending':'badge-overdue'}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span>
-        <a href="create-invoice.html" class="cust-action"><i class="bi bi-plus-circle"></i> New Bill</a>
-      </div>
-    </div>
-  `).join('');
-}
+<div class="cust-stat">
+<span class="cust-stat-val">${c.invoices}</span>
+<span class="cust-stat-label">Invoices</span>
+</div>
 
-renderCustomers();
-</script>
+<div class="cust-stat">
+<span class="cust-stat-val">${c.total}</span>
+<span class="cust-stat-label">Total</span>
+</div>
+
+</div>
+
+<div class="cust-footer">
+  <span class="badge-paid">Active</span>
+
+  <a href="create-invoice.html?name=${encodeURIComponent(c.name)}&email=${encodeURIComponent(c.email)}&phone=${encodeURIComponent(c.phone !== '-' ? c.phone : '')}" class="cust-action">
+    <i class="bi bi-plus-circle"></i> New Bill
+  </a>
+</div>
+
+</div>
+
+`).join("")
+
+    }
+
+
+
+    loadCustomers()
+
+  </script>
+  <script>
+    function logout() {
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+
+      window.location.href = "login.html";
+
+    }
+  </script>
+
 </body>
+
 </html>

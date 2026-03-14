@@ -1,49 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BillFlow – Create Invoice</title>
+  <script>
+    if (!localStorage.getItem("accessToken")) {
+      window.location.href = "login.html"
+    }
+  </script>
+  <script src="assets/js/api.js"></script>
+  <script>
+  // Run this when the page loads
+  window.addEventListener('DOMContentLoaded', () => {
+    // 1. Get the parameters from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const prefillName = urlParams.get('name');
+    const prefillEmail = urlParams.get('email');
+    const prefillPhone = urlParams.get('phone');
+  
+    // 2. Pop them into your specific input fields!
+    if (prefillName) {
+      document.getElementById('custName').value = prefillName;
+    }
+    if (prefillEmail) {
+      document.getElementById('custEmail').value = prefillEmail;
+    }
+    if (prefillPhone) {
+      document.getElementById('custPhone').value = prefillPhone;
+    }
+  });
+</script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
 
-<div class="app-shell d-flex">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
-      <span class="brand-name">BillFlow</span>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="index.html" class="nav-item">
-        <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
-      </a>
-      <a href="create-invoice.html" class="nav-item active">
-        <i class="bi bi-plus-square"></i><span>Create Bill</span>
-      </a>
-      <a href="invoices.html" class="nav-item">
-        <i class="bi bi-receipt"></i><span>Invoices</span>
-      </a>
-      <a href="customers.html" class="nav-item">
-        <i class="bi bi-people"></i><span>Patient</span>
-      </a>
-      <a href="reports.html" class="nav-item">
-        <i class="bi bi-bar-chart-line"></i><span>Reports</span>
-      </a>
-      <a href="settings.html" class="nav-item">
-        <i class="bi bi-gear"></i><span>Settings</span>
-      </a>
-    </nav>
-    <div class="sidebar-footer">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+        <span class="brand-name">BillFlow</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item">
+          <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+        </a>
+        <a href="create-invoice.html" class="nav-item active">
+          <i class="bi bi-plus-square"></i><span>Create Bill</span>
+        </a>
+        <a href="invoices.html" class="nav-item">
+          <i class="bi bi-receipt"></i><span>Invoices</span>
+        </a>
+        <a href="customers.html" class="nav-item">
+          <i class="bi bi-people"></i><span>Patient</span>
+        </a>
+        <a href="reports.html" class="nav-item">
+          <i class="bi bi-bar-chart-line"></i><span>Reports</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i class="bi bi-gear"></i><span>Settings</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
       <div class="user-avatar">A</div>
+
       <div>
         <div class="user-name">Admin</div>
         <div class="user-role">Super Admin</div>
+
       </div>
-    </div>
+  </div>
   </aside>
 
   <main class="main-content">
@@ -143,7 +176,8 @@
           <!-- Notes -->
           <div class="card-box mb-4">
             <label class="form-label-custom">Notes / Terms (Optional)</label>
-            <textarea class="form-input" rows="3" placeholder="Payment terms, thank you note, special instructions..."></textarea>
+            <textarea class="form-input" rows="3"
+              placeholder="Payment terms, thank you note, special instructions..."></textarea>
           </div>
         </div>
 
@@ -162,6 +196,7 @@
                   <option value="gst18">GST 0%</option>
                   <option value="gst5">GST 5%</option>
                   <option value="gst12">GST 12%</option>
+                  <option value="gst12">GST 18%</option>
                 </select>
               </div>
               <div class="mt-3">
@@ -238,128 +273,160 @@
       </div>
     </div>
   </main>
-</div>
+  </div>
 
-<!-- Invoice Preview Modal -->
-<div class="modal fade" id="invoiceModal" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content invoice-preview-modal">
-      <div class="modal-header">
-        <h5 class="modal-title">Invoice Preview</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" id="invoicePreviewBody">
-        <!-- Populated by JS -->
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary-cta" data-bs-dismiss="modal">Close</button>
-        <button class="btn-primary-cta" onclick="window.print()"><i class="bi bi-printer"></i> Print</button>
-        <button class="btn-primary-cta"><i class="bi bi-download"></i> Download PDF</button>
+  <!-- Invoice Preview Modal -->
+  <div class="modal fade" id="invoiceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content invoice-preview-modal">
+        <div class="modal-header">
+          <h5 class="modal-title">Invoice Preview</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="invoicePreviewBody">
+          <!-- Populated by JS -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary-cta" data-bs-dismiss="modal">
+            Close
+          </button>
+
+          <button class="btn-primary-cta" onclick="window.print()">
+            <i class="bi bi-printer"></i> Print
+          </button>
+
+          <button class="btn-primary-cta" id="confirmInvoice">
+            Create Invoice
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  // Set default dates
-  const today = new Date();
-  document.getElementById('invDate').value = today.toISOString().split('T')[0];
-  const due = new Date(); due.setDate(due.getDate()+14);
-  document.getElementById('dueDate').value = due.toISOString().split('T')[0];
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Set default dates
+    const today = new Date();
+    document.getElementById('invDate').value = today.toISOString().split('T')[0];
+    const due = new Date(); due.setDate(due.getDate() + 14);
+    document.getElementById('dueDate').value = due.toISOString().split('T')[0];
 
-  let rowId = 0;
+    let rowId = 0;
 
-  function addItem(name='', qty=1, price=0) {
-    rowId++;
-    const id = rowId;
-    const div = document.createElement('div');
-    div.className = 'item-row';
-    div.id = `row-${id}`;
-    div.innerHTML = `
+    function addItem(name = '', qty = 1, price = 0) {
+      rowId++;
+      const id = rowId;
+      const div = document.createElement('div');
+      div.className = 'item-row';
+      div.id = `row-${id}`;
+      div.innerHTML = `
       <input type="text" class="form-input item-name" placeholder="Product name" value="${name}">
       <input type="number" class="form-input item-qty" value="${qty}" min="1" oninput="calcRow(${id})">
       <input type="number" class="form-input item-price" value="${price}" min="0" oninput="calcRow(${id})">
-      <span class="item-total" id="total-${id}">₹${(qty*price).toFixed(2)}</span>
+      <span class="item-total" id="total-${id}">₹${(qty * price).toFixed(2)}</span>
       <button class="del-row-btn" onclick="delRow(${id})"><i class="bi bi-trash3"></i></button>
     `;
-    document.getElementById('itemsBody').appendChild(div);
-    calcAll();
-  }
+      document.getElementById('itemsBody').appendChild(div);
+      calcAll();
+    }
 
-  function delRow(id) {
-    document.getElementById(`row-${id}`).remove();
-    calcAll();
-  }
+    function delRow(id) {
+      document.getElementById(`row-${id}`).remove();
+      calcAll();
+    }
 
-  function calcRow(id) {
-    const row = document.getElementById(`row-${id}`);
-    const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
-    const price = parseFloat(row.querySelector('.item-price').value) || 0;
-    row.querySelector(`#total-${id}`).textContent = `₹${(qty*price).toFixed(2)}`;
-    calcAll();
-  }
+    function calcRow(id) {
+      const row = document.getElementById(`row-${id}`);
+      const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+      const price = parseFloat(row.querySelector('.item-price').value) || 0;
+      row.querySelector(`#total-${id}`).textContent = `₹${(qty * price).toFixed(2)}`;
+      calcAll();
+    }
 
-  const taxRates = { gst18:18, gst12:12, gst5:5, vat:10, none:0 };
-  const taxLabels = { gst18:'GST (18%)', gst12:'GST (12%)', gst5:'GST (5%)', vat:'VAT (10%)', none:'No Tax' };
+    function getItems() {
 
-  function calcAll() {
-    let sub = 0;
-    document.querySelectorAll('.item-row').forEach(row => {
-      const qty = parseFloat(row.querySelector('.item-qty').value)||0;
-      const price = parseFloat(row.querySelector('.item-price').value)||0;
-      sub += qty*price;
+      const items = []
+
+      document.querySelectorAll(".item-row").forEach(row => {
+
+        const name = row.querySelector(".item-name").value
+        const qty = parseFloat(row.querySelector(".item-qty").value) || 0
+        const price = parseFloat(row.querySelector(".item-price").value) || 0
+
+        if (name) {
+          items.push({
+            name,
+            qty,
+            price,
+            total: qty * price
+          })
+        }
+
+      })
+
+      return items
+    }
+
+    const taxRates = { gst18: 18, gst12: 12, gst5: 5, vat: 10, none: 0 };
+    const taxLabels = { gst18: 'GST (18%)', gst12: 'GST (12%)', gst5: 'GST (5%)', vat: 'VAT (10%)', none: 'No Tax' };
+
+    function calcAll() {
+      let sub = 0;
+      document.querySelectorAll('.item-row').forEach(row => {
+        const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+        const price = parseFloat(row.querySelector('.item-price').value) || 0;
+        sub += qty * price;
+      });
+      const taxKey = document.getElementById('taxType').value;
+      const taxRate = taxRates[taxKey];
+      const discVal = parseFloat(document.getElementById('discountVal').value) || 0;
+      const discType = document.getElementById('discountType').value;
+      const disc = discType === 'percent' ? sub * (discVal / 100) : discVal;
+      const afterDisc = Math.max(0, sub - disc);
+      const tax = afterDisc * (taxRate / 100);
+      const grand = afterDisc + tax;
+
+      document.getElementById('subtotalDisp').textContent = `₹${sub.toFixed(2)}`;
+      document.getElementById('discountDisp').textContent = `−₹${disc.toFixed(2)}`;
+      document.getElementById('taxLabel').textContent = taxLabels[taxKey];
+      document.getElementById('taxDisp').textContent = `₹${tax.toFixed(2)}`;
+      document.getElementById('grandTotalDisp').textContent = `₹${grand.toFixed(2)}`;
+    }
+
+    document.getElementById('addItemBtn').addEventListener('click', () => addItem());
+    document.getElementById('taxType').addEventListener('change', calcAll);
+    document.getElementById('discountVal').addEventListener('input', calcAll);
+    document.getElementById('discountType').addEventListener('change', calcAll);
+
+    // Payment option styling
+    document.querySelectorAll('input[name="payMethod"]').forEach(r => {
+      r.addEventListener('change', () => {
+        document.querySelectorAll('.pay-opt').forEach(el => el.classList.remove('selected'));
+        r.closest('.pay-opt').classList.add('selected');
+      });
     });
-    const taxKey = document.getElementById('taxType').value;
-    const taxRate = taxRates[taxKey];
-    const discVal = parseFloat(document.getElementById('discountVal').value)||0;
-    const discType = document.getElementById('discountType').value;
-    const disc = discType==='percent' ? sub*(discVal/100) : discVal;
-    const afterDisc = Math.max(0, sub-disc);
-    const tax = afterDisc*(taxRate/100);
-    const grand = afterDisc+tax;
+    document.querySelector('.pay-opt').classList.add('selected');
 
-    document.getElementById('subtotalDisp').textContent = `₹${sub.toFixed(2)}`;
-    document.getElementById('discountDisp').textContent = `−₹${disc.toFixed(2)}`;
-    document.getElementById('taxLabel').textContent = taxLabels[taxKey];
-    document.getElementById('taxDisp').textContent = `₹${tax.toFixed(2)}`;
-    document.getElementById('grandTotalDisp').textContent = `₹${grand.toFixed(2)}`;
-  }
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const name = document.getElementById('custName').value || '—';
+      const phone = document.getElementById('custPhone').value || '—';
+      const email = document.getElementById('custEmail').value || '—';
+      const invDate = document.getElementById('invDate').value;
+      const dueDate = document.getElementById('dueDate').value;
+      const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
+      const payStatus = document.getElementById('payStatus').value;
+      const grand = document.getElementById('grandTotalDisp').textContent;
 
-  document.getElementById('addItemBtn').addEventListener('click', ()=>addItem());
-  document.getElementById('taxType').addEventListener('change', calcAll);
-  document.getElementById('discountVal').addEventListener('input', calcAll);
-  document.getElementById('discountType').addEventListener('change', calcAll);
+      let rows = '';
+      document.querySelectorAll('.item-row').forEach(row => {
+        const n = row.querySelector('.item-name').value || '—';
+        const q = row.querySelector('.item-qty').value;
+        const p = row.querySelector('.item-price').value;
+        const t = (parseFloat(q) * parseFloat(p)).toFixed(2);
+        rows += `<tr><td>${n}</td><td>${q}</td><td>₹${p}</td><td>₹${t}</td></tr>`;
+      });
 
-  // Payment option styling
-  document.querySelectorAll('input[name="payMethod"]').forEach(r => {
-    r.addEventListener('change', () => {
-      document.querySelectorAll('.pay-opt').forEach(el=>el.classList.remove('selected'));
-      r.closest('.pay-opt').classList.add('selected');
-    });
-  });
-  document.querySelector('.pay-opt').classList.add('selected');
-
-  document.getElementById('generateBtn').addEventListener('click', ()=>{
-    const name = document.getElementById('custName').value || '—';
-    const phone = document.getElementById('custPhone').value || '—';
-    const email = document.getElementById('custEmail').value || '—';
-    const invDate = document.getElementById('invDate').value;
-    const dueDate = document.getElementById('dueDate').value;
-    const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
-    const payStatus = document.getElementById('payStatus').value;
-    const grand = document.getElementById('grandTotalDisp').textContent;
-
-    let rows = '';
-    document.querySelectorAll('.item-row').forEach(row=>{
-      const n=row.querySelector('.item-name').value||'—';
-      const q=row.querySelector('.item-qty').value;
-      const p=row.querySelector('.item-price').value;
-      const t=(parseFloat(q)*parseFloat(p)).toFixed(2);
-      rows+=`<tr><td>${n}</td><td>${q}</td><td>₹${p}</td><td>₹${t}</td></tr>`;
-    });
-
-    document.getElementById('invoicePreviewBody').innerHTML = `
+      document.getElementById('invoicePreviewBody').innerHTML = `
       <div class="inv-preview">
         <div class="inv-preview-header">
           <div class="inv-logo"><i class="bi bi-lightning-charge-fill"></i> BillFlow</div>
@@ -377,7 +444,7 @@
           <div>
             <div class="inv-section-label">Payment</div>
             <strong>${payMethod.toUpperCase()}</strong><br>
-            <span class="${payStatus==='paid'?'badge-paid':'badge-pending'}">${payStatus.charAt(0).toUpperCase()+payStatus.slice(1)}</span>
+            <span class="${payStatus === 'paid' ? 'badge-paid' : 'badge-pending'}">${payStatus.charAt(0).toUpperCase() + payStatus.slice(1)}</span>
           </div>
         </div>
         <table class="inv-items-table">
@@ -392,14 +459,89 @@
         </div>
       </div>
     `;
-    new bootstrap.Modal(document.getElementById('invoiceModal')).show();
-  });
+      new bootstrap.Modal(document.getElementById('invoiceModal')).show();
+    });
 
-  // Pre-fill a sample row
-  addItem('Sample Product', 2, 500);
+    // Pre-fill a sample row
+    addItem('Sample Product', 2, 500);
 
-  const invNum = 'INV-' + Date.now().toString().slice(-5);
+    const invNum = 'INV-' + Date.now().toString().slice(-5);
     document.getElementById('invNumber').textContent = '#' + invNum;
-</script>
+  </script>
+  <script>
+
+    document.getElementById("confirmInvoice")
+      .addEventListener("click", async function () {
+
+        const customerName =
+          document.getElementById("custName").value
+
+        const customerEmail =
+          document.getElementById("custEmail").value
+
+        const dueDate =
+          document.getElementById("dueDate").value
+
+        const amount =
+          parseFloat(
+            document.getElementById("grandTotalDisp")
+              .textContent.replace(/[₹,]/g, "")
+          )
+
+        try {
+
+          const items = getItems()
+
+          const paymentMethod =
+            document.querySelector('input[name="payMethod"]:checked').value
+
+          const status =
+            document.getElementById("payStatus").value
+
+          await apiRequest("/api/invoices", {
+            method: "POST",
+            body: JSON.stringify({
+
+              customerName,
+              customerEmail,
+              phone: document.getElementById("custPhone").value,
+
+              invoiceDate: document.getElementById("invDate").value,
+              dueDate,
+
+              items,
+
+              paymentMethod,
+              status,
+
+              amount
+
+            })
+          })
+
+          alert("Invoice created successfully")
+
+          window.location.href = "invoices.html"
+
+        } catch (err) {
+
+          alert("Failed to create invoice: " + err.message)
+
+        }
+
+      })
+
+  </script>
+  <script>
+    function logout() {
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+
+      window.location.href = "login.html";
+
+    }
+  </script>
 </body>
+
 </html>

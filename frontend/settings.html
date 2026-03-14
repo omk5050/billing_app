@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BillFlow – Settings</title>
+  <script>
+    if (!localStorage.getItem("accessToken")) {
+      window.location.href = "login.html"
+    }
+  </script>
+  <script src="assets/js/api.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <style>
@@ -27,6 +36,7 @@
       position: sticky;
       top: 90px;
     }
+
     .settings-nav-item {
       display: flex;
       align-items: center;
@@ -43,9 +53,22 @@
       width: 100%;
       text-align: left;
     }
-    .settings-nav-item:hover { background: var(--bg); color: var(--text); }
-    .settings-nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
-    .settings-nav-item i { font-size: 15px; }
+
+    .settings-nav-item:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .settings-nav-item.active {
+      background: var(--blue-light);
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .settings-nav-item i {
+      font-size: 15px;
+    }
+
     .settings-nav-section {
       font-size: 10.5px;
       font-weight: 700;
@@ -55,11 +78,22 @@
       padding: 10px 12px 4px;
       margin-top: 6px;
     }
-    .settings-nav-divider { height: 1px; background: var(--border); margin: 6px 0; }
+
+    .settings-nav-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 6px 0;
+    }
 
     /* Settings panels */
-    .settings-panel { display: none; }
-    .settings-panel.active { display: block; animation: fadeUp 0.2s ease; }
+    .settings-panel {
+      display: none;
+    }
+
+    .settings-panel.active {
+      display: block;
+      animation: fadeUp 0.2s ease;
+    }
 
     /* Section card */
     .settings-section {
@@ -70,12 +104,14 @@
       box-shadow: var(--shadow);
       margin-bottom: 20px;
     }
+
     .settings-section-title {
       font-family: 'Syne', sans-serif;
       font-size: 15px;
       font-weight: 700;
       margin-bottom: 4px;
     }
+
     .settings-section-desc {
       font-size: 12.5px;
       color: var(--text-muted);
@@ -85,8 +121,14 @@
     }
 
     /* Form field */
-    .settings-field { margin-bottom: 18px; }
-    .settings-field:last-child { margin-bottom: 0; }
+    .settings-field {
+      margin-bottom: 18px;
+    }
+
+    .settings-field:last-child {
+      margin-bottom: 0;
+    }
+
     .field-label {
       display: block;
       font-size: 12px;
@@ -96,7 +138,13 @@
       color: var(--text-muted);
       margin-bottom: 6px;
     }
-    .field-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 5px; }
+
+    .field-hint {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
     .settings-input {
       width: 100%;
       padding: 9px 12px;
@@ -109,12 +157,29 @@
       outline: none;
       transition: border-color 0.15s;
     }
-    .settings-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.08); background:#fff; }
-    textarea.settings-input { resize: vertical; }
+
+    .settings-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+      background: #fff;
+    }
+
+    textarea.settings-input {
+      resize: vertical;
+    }
 
     /* Two-col grid */
-    .field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .field-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
 
     /* Toggle row */
     .toggle-row {
@@ -125,12 +190,36 @@
       padding: 14px 0;
       border-bottom: 1px solid var(--border);
     }
-    .toggle-row:last-child { border-bottom: none; padding-bottom: 0; }
-    .toggle-row:first-child { padding-top: 0; }
-    .toggle-info { flex: 1; }
-    .toggle-name { font-size: 13.5px; font-weight: 600; margin-bottom: 3px; }
-    .toggle-desc { font-size: 12px; color: var(--text-muted); }
-    .form-check-input { width: 38px !important; height: 20px; cursor: pointer; }
+
+    .toggle-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .toggle-row:first-child {
+      padding-top: 0;
+    }
+
+    .toggle-info {
+      flex: 1;
+    }
+
+    .toggle-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .toggle-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .form-check-input {
+      width: 38px !important;
+      height: 20px;
+      cursor: pointer;
+    }
 
     /* Logo upload */
     .logo-upload-area {
@@ -142,17 +231,39 @@
       transition: 0.2s;
       background: var(--bg);
     }
-    .logo-upload-area:hover { border-color: var(--blue); background: var(--blue-light); }
-    .logo-upload-icon { font-size: 32px; color: var(--text-muted); margin-bottom: 8px; }
-    .logo-upload-text { font-size: 13px; color: var(--text-muted); }
-    .logo-upload-text strong { color: var(--blue); }
+
+    .logo-upload-area:hover {
+      border-color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .logo-upload-icon {
+      font-size: 32px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .logo-upload-text {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .logo-upload-text strong {
+      color: var(--blue);
+    }
+
     .logo-preview {
-      width: 80px; height: 80px;
+      width: 80px;
+      height: 80px;
       border-radius: 14px;
       background: linear-gradient(135deg, #2563EB, #7C3AED);
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: 'Syne', sans-serif;
-      font-size: 24px; font-weight: 800; color: #fff;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
       margin: 0 auto 12px;
     }
 
@@ -162,24 +273,31 @@
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .color-swatch {
-      width: 34px; height: 34px;
+      width: 34px;
+      height: 34px;
       border-radius: 8px;
       cursor: pointer;
       border: 3px solid transparent;
       transition: 0.15s;
       position: relative;
     }
+
     .color-swatch.selected::after {
       content: '\F26E';
       font-family: 'bootstrap-icons';
       color: #fff;
       position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       font-size: 13px;
     }
-    .color-swatch.selected { border-color: rgba(0,0,0,0.25); }
+
+    .color-swatch.selected {
+      border-color: rgba(0, 0, 0, 0.25);
+    }
 
     /* Tax table */
     .tax-row {
@@ -190,23 +308,43 @@
       padding: 8px 0;
       border-bottom: 1px solid var(--border);
     }
-    .tax-row:last-child { border-bottom: none; }
-    .tax-row-header {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.4px; color: var(--text-muted);
-      padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px;
+
+    .tax-row:last-child {
+      border-bottom: none;
     }
+
+    .tax-row-header {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 4px;
+    }
+
     .add-tax-btn {
-      display: inline-flex; align-items: center; gap: 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       padding: 8px 16px;
       background: var(--blue-light);
       color: var(--blue);
       border: 1.5px dashed var(--blue-mid);
       border-radius: 9px;
-      font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: 0.15s; margin-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.15s;
+      margin-top: 10px;
     }
-    .add-tax-btn:hover { background: var(--blue); color: #fff; border-style: solid; }
+
+    .add-tax-btn:hover {
+      background: var(--blue);
+      color: #fff;
+      border-style: solid;
+    }
 
     /* User / team */
     .team-member {
@@ -216,26 +354,64 @@
       padding: 12px 0;
       border-bottom: 1px solid var(--border);
     }
-    .team-member:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .team-member:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
     .member-avatar {
-      width: 38px; height: 38px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 14px; color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
       flex-shrink: 0;
     }
-    .member-name { font-size: 13.5px; font-weight: 600; }
-    .member-email { font-size: 12px; color: var(--text-muted); }
-    .member-actions { margin-left: auto; display: flex; gap: 6px; }
+
+    .member-name {
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .member-email {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .member-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 6px;
+    }
+
     .role-badge {
       display: inline-block;
-      padding: 2px 10px; border-radius: 20px;
-      font-size: 11px; font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
     }
-    .role-admin  { background: var(--blue-light);   color: var(--blue);   }
-    .role-staff  { background: var(--green-light);  color: var(--green);  }
-    .role-viewer { background: var(--orange-light); color: var(--orange); }
+
+    .role-admin {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .role-staff {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .role-viewer {
+      background: var(--orange-light);
+      color: var(--orange);
+    }
 
     /* Danger zone */
     .danger-section {
@@ -245,17 +421,39 @@
       padding: 20px 24px;
       margin-bottom: 20px;
     }
-    .danger-title { font-size: 14px; font-weight: 700; color: var(--danger); margin-bottom: 4px; }
-    .danger-desc  { font-size: 12.5px; color: #B91C1C; }
-    .btn-danger {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 8px 18px;
-      background: var(--danger); color: #fff;
-      border: none; border-radius: 9px;
-      font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px;
-      cursor: pointer; transition: 0.15s; margin-top: 12px;
+
+    .danger-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--danger);
+      margin-bottom: 4px;
     }
-    .btn-danger:hover { background: #B91C1C; }
+
+    .danger-desc {
+      font-size: 12.5px;
+      color: #B91C1C;
+    }
+
+    .btn-danger {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 18px;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.15s;
+      margin-top: 12px;
+    }
+
+    .btn-danger:hover {
+      background: #B91C1C;
+    }
 
     /* Save bar */
     .save-bar {
@@ -263,13 +461,22 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 14px 20px;
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       box-shadow: var(--shadow);
       margin-bottom: 20px;
       animation: fadeUp 0.2s ease;
     }
-    .save-bar-msg { font-size: 13px; color: var(--text-muted); }
-    .save-bar-msg strong { color: var(--text); }
+
+    .save-bar-msg {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .save-bar-msg strong {
+      color: var(--text);
+    }
 
     /* Invoice preview mini */
     .inv-preview-mini {
@@ -278,45 +485,116 @@
       padding: 16px;
       background: var(--bg);
     }
-    .inv-prev-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-    .inv-prev-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:14px; color:var(--blue); }
-    .inv-prev-num { font-size:11px; color:var(--text-muted); }
-    .inv-prev-field { background:var(--border); border-radius:4px; height:8px; margin-bottom:7px; }
-    .inv-prev-row { display:grid; grid-template-columns:1fr 60px 70px; gap:6px; margin-bottom:6px; }
-    .inv-prev-cell { background:var(--border); border-radius:3px; height:7px; }
-    .inv-prev-total { text-align:right; margin-top:10px; }
-    .inv-prev-total-val { font-family:'Syne',sans-serif; font-weight:800; font-size:16px; color:var(--blue); }
 
-    @media(max-width:900px){
-      .settings-shell { grid-template-columns:1fr; }
-      .settings-nav { position:static; display:flex; flex-wrap:wrap; gap:4px; padding:8px; }
-      .settings-nav-section { display:none; }
-      .settings-nav-divider { display:none; }
-      .field-grid-2,.field-grid-3 { grid-template-columns:1fr; }
+    .inv-prev-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .inv-prev-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--blue);
+    }
+
+    .inv-prev-num {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .inv-prev-field {
+      background: var(--border);
+      border-radius: 4px;
+      height: 8px;
+      margin-bottom: 7px;
+    }
+
+    .inv-prev-row {
+      display: grid;
+      grid-template-columns: 1fr 60px 70px;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .inv-prev-cell {
+      background: var(--border);
+      border-radius: 3px;
+      height: 7px;
+    }
+
+    .inv-prev-total {
+      text-align: right;
+      margin-top: 10px;
+    }
+
+    .inv-prev-total-val {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--blue);
+    }
+
+    @media(max-width:900px) {
+      .settings-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .settings-nav {
+        position: static;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        padding: 8px;
+      }
+
+      .settings-nav-section {
+        display: none;
+      }
+
+      .settings-nav-divider {
+        display: none;
+      }
+
+      .field-grid-2,
+      .field-grid-3 {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
-<body>
-<div class="app-shell d-flex">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
-      <span class="brand-name">BillFlow</span>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="index.html"          class="nav-item"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
-      <a href="create-invoice.html" class="nav-item"><i class="bi bi-plus-square"></i><span>Create Bill</span></a>
-      <a href="invoices.html"       class="nav-item"><i class="bi bi-receipt"></i><span>Invoices</span></a>
-      <a href="customers.html"      class="nav-item"><i class="bi bi-people"></i><span>Patient</span></a>
-      <a href="reports.html"        class="nav-item"><i class="bi bi-bar-chart-line"></i><span>Reports</span></a>
-      <a href="settings.html"       class="nav-item active"><i class="bi bi-gear"></i><span>Settings</span></a>
-    </nav>
-    <div class="sidebar-footer">
+<body>
+  <div class="app-shell d-flex">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+        <span class="brand-name">BillFlow</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+        <a href="create-invoice.html" class="nav-item"><i class="bi bi-plus-square"></i><span>Create Bill</span></a>
+        <a href="invoices.html" class="nav-item"><i class="bi bi-receipt"></i><span>Invoices</span></a>
+        <a href="customers.html" class="nav-item"><i class="bi bi-people"></i><span>Patient</span></a>
+        <a href="reports.html" class="nav-item"><i class="bi bi-bar-chart-line"></i><span>Reports</span></a>
+        <a href="settings.html" class="nav-item active"><i class="bi bi-gear"></i><span>Settings</span></a>
+      </nav>
+      <div class="sidebar-footer">
       <div class="user-avatar">A</div>
-      <div><div class="user-name">Admin</div><div class="user-role">Super Admin</div></div>
-    </div>
+
+      <div>
+        <div class="user-name">Admin</div>
+        <div class="user-role">Super Admin</div>
+
+        <button onclick="logout()" class="logout-btn">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
+  </div>
   </aside>
 
   <!-- Main -->
@@ -327,8 +605,10 @@
         <p class="page-sub">Configure your billing system preferences.</p>
       </div>
       <div class="topbar-actions">
-        <button class="btn-secondary-cta" onclick="showToast('Changes discarded')"><i class="bi bi-x-lg"></i> Discard</button>
-        <button class="btn-primary-cta"   onclick="showToast('Settings saved successfully!')"><i class="bi bi-check-lg"></i> Save Changes</button>
+        <button class="btn-secondary-cta" onclick="showToast('Changes discarded')"><i class="bi bi-x-lg"></i>
+          Discard</button>
+        <button class="btn-primary-cta" onclick="showToast('Settings saved successfully!')"><i
+            class="bi bi-check-lg"></i> Save Changes</button>
       </div>
     </header>
 
@@ -414,7 +694,8 @@
               </div>
               <div class="settings-field">
                 <label class="field-label">Registered Address</label>
-                <textarea class="settings-input" rows="2">42, Tech Park Road, Whitefield, Bengaluru – 560066, Karnataka, India</textarea>
+                <textarea class="settings-input"
+                  rows="2">42, Tech Park Road, Whitefield, Bengaluru – 560066, Karnataka, India</textarea>
               </div>
               <div class="field-grid-3">
                 <div class="settings-field">
@@ -483,7 +764,8 @@
                   <label class="field-label">Business Logo</label>
                   <div class="logo-upload-area" onclick="showToast('File picker opening...')">
                     <div class="logo-preview">BF</div>
-                    <div class="logo-upload-text"><strong>Click to upload</strong> or drag & drop<br>PNG, JPG, SVG — max 2MB</div>
+                    <div class="logo-upload-text"><strong>Click to upload</strong> or drag & drop<br>PNG, JPG, SVG —
+                      max 2MB</div>
                   </div>
                 </div>
                 <div>
@@ -496,10 +778,25 @@
                     <div class="inv-prev-field" style="width:60%"></div>
                     <div class="inv-prev-field" style="width:40%"></div>
                     <div style="height:10px"></div>
-                    <div class="inv-prev-row"><div class="inv-prev-cell"></div><div class="inv-prev-cell"></div><div class="inv-prev-cell"></div></div>
-                    <div class="inv-prev-row"><div class="inv-prev-cell"></div><div class="inv-prev-cell"></div><div class="inv-prev-cell"></div></div>
-                    <div class="inv-prev-row"><div class="inv-prev-cell"></div><div class="inv-prev-cell"></div><div class="inv-prev-cell"></div></div>
-                    <div class="inv-prev-total"><div style="font-size:10px;color:var(--text-muted);margin-bottom:3px;">Grand Total</div><div class="inv-prev-total-val" id="previewColor">₹5,900</div></div>
+                    <div class="inv-prev-row">
+                      <div class="inv-prev-cell"></div>
+                      <div class="inv-prev-cell"></div>
+                      <div class="inv-prev-cell"></div>
+                    </div>
+                    <div class="inv-prev-row">
+                      <div class="inv-prev-cell"></div>
+                      <div class="inv-prev-cell"></div>
+                      <div class="inv-prev-cell"></div>
+                    </div>
+                    <div class="inv-prev-row">
+                      <div class="inv-prev-cell"></div>
+                      <div class="inv-prev-cell"></div>
+                      <div class="inv-prev-cell"></div>
+                    </div>
+                    <div class="inv-prev-total">
+                      <div style="font-size:10px;color:var(--text-muted);margin-bottom:3px;">Grand Total</div>
+                      <div class="inv-prev-total-val" id="previewColor">₹5,900</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -509,18 +806,27 @@
               <div class="settings-section-title">Primary Color</div>
               <div class="settings-section-desc">Used on invoice headers, buttons, and accents.</div>
               <div class="color-options" id="colorOptions">
-                <div class="color-swatch selected" style="background:#2563EB" data-color="#2563EB" onclick="selectColor(this)"></div>
-                <div class="color-swatch" style="background:#059669" data-color="#059669" onclick="selectColor(this)"></div>
-                <div class="color-swatch" style="background:#7C3AED" data-color="#7C3AED" onclick="selectColor(this)"></div>
-                <div class="color-swatch" style="background:#DC2626" data-color="#DC2626" onclick="selectColor(this)"></div>
-                <div class="color-swatch" style="background:#D97706" data-color="#D97706" onclick="selectColor(this)"></div>
-                <div class="color-swatch" style="background:#0891B2" data-color="#0891B2" onclick="selectColor(this)"></div>
-                <div class="color-swatch" style="background:#0F172A" data-color="#0F172A" onclick="selectColor(this)"></div>
-                <div class="color-swatch" style="background:#EC4899" data-color="#EC4899" onclick="selectColor(this)"></div>
+                <div class="color-swatch selected" style="background:#2563EB" data-color="#2563EB"
+                  onclick="selectColor(this)"></div>
+                <div class="color-swatch" style="background:#059669" data-color="#059669" onclick="selectColor(this)">
+                </div>
+                <div class="color-swatch" style="background:#7C3AED" data-color="#7C3AED" onclick="selectColor(this)">
+                </div>
+                <div class="color-swatch" style="background:#DC2626" data-color="#DC2626" onclick="selectColor(this)">
+                </div>
+                <div class="color-swatch" style="background:#D97706" data-color="#D97706" onclick="selectColor(this)">
+                </div>
+                <div class="color-swatch" style="background:#0891B2" data-color="#0891B2" onclick="selectColor(this)">
+                </div>
+                <div class="color-swatch" style="background:#0F172A" data-color="#0F172A" onclick="selectColor(this)">
+                </div>
+                <div class="color-swatch" style="background:#EC4899" data-color="#EC4899" onclick="selectColor(this)">
+                </div>
               </div>
               <div style="margin-top:14px;">
                 <label class="field-label">Custom Hex</label>
-                <input class="settings-input" style="max-width:180px" id="hexInput" value="#2563EB" oninput="applyHex(this.value)">
+                <input class="settings-input" style="max-width:180px" id="hexInput" value="#2563EB"
+                  oninput="applyHex(this.value)">
               </div>
             </div>
 
@@ -557,7 +863,8 @@
               </div>
               <div class="settings-field">
                 <label class="field-label">Footer Note (appears on all invoices)</label>
-                <textarea class="settings-input" rows="2">Thank you for your business! Payment due within 14 days. For queries, contact admin@billflow.in</textarea>
+                <textarea class="settings-input"
+                  rows="2">Thank you for your business! Payment due within 14 days. For queries, contact admin@billflow.in</textarea>
               </div>
             </div>
           </div>
@@ -588,7 +895,9 @@
               </div>
               <div class="settings-field">
                 <label class="field-label">Preview</label>
-                <div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--blue);padding:12px 16px;background:var(--blue-light);border-radius:9px;display:inline-block;">#INV-1043</div>
+                <div
+                  style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--blue);padding:12px 16px;background:var(--blue-light);border-radius:9px;display:inline-block;">
+                  #INV-1043</div>
               </div>
             </div>
 
@@ -638,21 +947,24 @@
                   <div class="toggle-name">Auto-send invoice on creation</div>
                   <div class="toggle-desc">Automatically email the invoice to the customer when generated.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
                   <div class="toggle-name">Send payment reminders</div>
                   <div class="toggle-desc">Auto-remind customers 3 days before due date.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
                   <div class="toggle-name">Mark overdue automatically</div>
                   <div class="toggle-desc">Change status to Overdue if not paid within due date.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
@@ -676,29 +988,50 @@
                 <div class="tax-row">
                   <input class="settings-input" value="GST 18%">
                   <input class="settings-input" type="number" value="18">
-                  <select class="settings-input"><option>GST</option><option>VAT</option><option>Custom</option></select>
-                  <button class="action-btn" style="color:var(--danger)" onclick="this.closest('.tax-row').remove()"><i class="bi bi-trash3"></i></button>
+                  <select class="settings-input">
+                    <option>GST</option>
+                    <option>VAT</option>
+                    <option>Custom</option>
+                  </select>
+                  <button class="action-btn" style="color:var(--danger)" onclick="this.closest('.tax-row').remove()"><i
+                      class="bi bi-trash3"></i></button>
                 </div>
                 <div class="tax-row">
                   <input class="settings-input" value="GST 12%">
                   <input class="settings-input" type="number" value="12">
-                  <select class="settings-input"><option>GST</option><option>VAT</option><option>Custom</option></select>
-                  <button class="action-btn" style="color:var(--danger)" onclick="this.closest('.tax-row').remove()"><i class="bi bi-trash3"></i></button>
+                  <select class="settings-input">
+                    <option>GST</option>
+                    <option>VAT</option>
+                    <option>Custom</option>
+                  </select>
+                  <button class="action-btn" style="color:var(--danger)" onclick="this.closest('.tax-row').remove()"><i
+                      class="bi bi-trash3"></i></button>
                 </div>
                 <div class="tax-row">
                   <input class="settings-input" value="GST 5%">
                   <input class="settings-input" type="number" value="5">
-                  <select class="settings-input"><option>GST</option><option>VAT</option><option>Custom</option></select>
-                  <button class="action-btn" style="color:var(--danger)" onclick="this.closest('.tax-row').remove()"><i class="bi bi-trash3"></i></button>
+                  <select class="settings-input">
+                    <option>GST</option>
+                    <option>VAT</option>
+                    <option>Custom</option>
+                  </select>
+                  <button class="action-btn" style="color:var(--danger)" onclick="this.closest('.tax-row').remove()"><i
+                      class="bi bi-trash3"></i></button>
                 </div>
                 <div class="tax-row">
                   <input class="settings-input" value="VAT 10%">
                   <input class="settings-input" type="number" value="10">
-                  <select class="settings-input"><option>GST</option><option selected>VAT</option><option>Custom</option></select>
-                  <button class="action-btn" style="color:var(--danger)" onclick="this.closest('.tax-row').remove()"><i class="bi bi-trash3"></i></button>
+                  <select class="settings-input">
+                    <option>GST</option>
+                    <option selected>VAT</option>
+                    <option>Custom</option>
+                  </select>
+                  <button class="action-btn" style="color:var(--danger)" onclick="this.closest('.tax-row').remove()"><i
+                      class="bi bi-trash3"></i></button>
                 </div>
               </div>
-              <button class="add-tax-btn" onclick="addTaxRow()"><i class="bi bi-plus-circle"></i> Add Tax Slab</button>
+              <button class="add-tax-btn" onclick="addTaxRow()"><i class="bi bi-plus-circle"></i> Add Tax
+                Slab</button>
             </div>
 
             <div class="settings-section">
@@ -709,7 +1042,8 @@
                   <div class="toggle-name">Split GST into CGST + SGST</div>
                   <div class="toggle-desc">Show CGST and SGST separately instead of combined GST.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
@@ -732,38 +1066,45 @@
           <div class="settings-panel" id="panel-payment">
             <div class="settings-section">
               <div class="settings-section-title">Accepted Payment Methods</div>
-              <div class="settings-section-desc">Enable or disable payment options shown during invoice creation.</div>
+              <div class="settings-section-desc">Enable or disable payment options shown during invoice creation.
+              </div>
               <div class="toggle-row">
                 <div class="toggle-info">
                   <div class="toggle-name"><i class="bi bi-cash-stack" style="color:var(--green)"></i> Cash</div>
                   <div class="toggle-desc">Accept physical cash payments.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
                   <div class="toggle-name"><i class="bi bi-phone" style="color:var(--blue)"></i> UPI</div>
                   <div class="toggle-desc">Accept payments via UPI apps (GPay, PhonePe, Paytm).</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
-                  <div class="toggle-name"><i class="bi bi-credit-card" style="color:var(--purple)"></i> Debit / Credit Card</div>
+                  <div class="toggle-name"><i class="bi bi-credit-card" style="color:var(--purple)"></i> Debit /
+                    Credit Card</div>
                   <div class="toggle-desc">Accept card payments via POS or payment gateway.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
-                  <div class="toggle-name"><i class="bi bi-bank" style="color:var(--orange)"></i> Bank Transfer / NEFT</div>
+                  <div class="toggle-name"><i class="bi bi-bank" style="color:var(--orange)"></i> Bank Transfer / NEFT
+                  </div>
                   <div class="toggle-desc">Accept direct bank transfers (NEFT / RTGS / IMPS).</div>
                 </div>
                 <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
-                  <div class="toggle-name"><i class="bi bi-check2-square" style="color:var(--text-muted)"></i> Cheque</div>
+                  <div class="toggle-name"><i class="bi bi-check2-square" style="color:var(--text-muted)"></i> Cheque
+                  </div>
                   <div class="toggle-desc">Accept cheque payments.</div>
                 </div>
                 <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox"></div>
@@ -793,7 +1134,8 @@
                   <div class="toggle-name">Show QR code on invoice</div>
                   <div class="toggle-desc">Display a scannable UPI QR code at the bottom of invoices.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
             </div>
           </div>
@@ -808,28 +1150,32 @@
                   <div class="toggle-name">Invoice created confirmation</div>
                   <div class="toggle-desc">Send you a copy whenever a new invoice is generated.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
                   <div class="toggle-name">Payment received alert</div>
                   <div class="toggle-desc">Get notified instantly when a payment is marked as paid.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
                   <div class="toggle-name">Overdue invoice alert</div>
                   <div class="toggle-desc">Alert when an invoice passes its due date unpaid.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
                   <div class="toggle-name">Weekly summary report</div>
                   <div class="toggle-desc">Receive a revenue summary every Monday morning.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
@@ -868,7 +1214,8 @@
                 <div>
                   <div class="settings-section-title" style="margin-bottom:0">Team Members</div>
                 </div>
-                <button class="btn-primary-cta" onclick="showToast('Invite sent!')"><i class="bi bi-person-plus"></i> Invite Member</button>
+                <button class="btn-primary-cta" onclick="showToast('Invite sent!')"><i class="bi bi-person-plus"></i>
+                  Invite Member</button>
               </div>
               <div class="settings-section-desc" style="margin-top:-8px">Manage who has access to BillFlow.</div>
 
@@ -879,7 +1226,8 @@
                   <div class="member-email">admin@billflow.in</div>
                 </div>
                 <div class="member-actions">
-                  <span style="font-size:12px;color:var(--text-muted);padding:6px 10px;background:var(--bg);border-radius:7px;">You</span>
+                  <span
+                    style="font-size:12px;color:var(--text-muted);padding:6px 10px;background:var(--bg);border-radius:7px;">You</span>
                 </div>
               </div>
               <div class="team-member">
@@ -889,8 +1237,10 @@
                   <div class="member-email">priya@billflow.in</div>
                 </div>
                 <div class="member-actions">
-                  <button class="action-btn view-btn" title="Edit" onclick="showToast('Edit member...')"><i class="bi bi-pencil"></i></button>
-                  <button class="action-btn" style="color:var(--danger)" onclick="showToast('Member removed')"><i class="bi bi-trash3"></i></button>
+                  <button class="action-btn view-btn" title="Edit" onclick="showToast('Edit member...')"><i
+                      class="bi bi-pencil"></i></button>
+                  <button class="action-btn" style="color:var(--danger)" onclick="showToast('Member removed')"><i
+                      class="bi bi-trash3"></i></button>
                 </div>
               </div>
               <div class="team-member">
@@ -900,8 +1250,10 @@
                   <div class="member-email">rohan@billflow.in</div>
                 </div>
                 <div class="member-actions">
-                  <button class="action-btn view-btn" title="Edit" onclick="showToast('Edit member...')"><i class="bi bi-pencil"></i></button>
-                  <button class="action-btn" style="color:var(--danger)" onclick="showToast('Member removed')"><i class="bi bi-trash3"></i></button>
+                  <button class="action-btn view-btn" title="Edit" onclick="showToast('Edit member...')"><i
+                      class="bi bi-pencil"></i></button>
+                  <button class="action-btn" style="color:var(--danger)" onclick="showToast('Member removed')"><i
+                      class="bi bi-trash3"></i></button>
                 </div>
               </div>
             </div>
@@ -912,7 +1264,9 @@
               <table style="width:100%;border-collapse:collapse;font-size:13px;">
                 <thead>
                   <tr style="border-bottom:1px solid var(--border)">
-                    <th style="padding:8px 0;text-align:left;color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:0.4px">Permission</th>
+                    <th
+                      style="padding:8px 0;text-align:left;color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:0.4px">
+                      Permission</th>
                     <th style="padding:8px;text-align:center;color:var(--blue);font-size:12px">Admin</th>
                     <th style="padding:8px;text-align:center;color:var(--green);font-size:12px">Staff</th>
                     <th style="padding:8px;text-align:center;color:var(--orange);font-size:12px">Viewer</th>
@@ -921,25 +1275,32 @@
                 <tbody>
                   <tr style="border-bottom:1px solid #F8FAFC">
                     <td style="padding:10px 0">Create Invoices</td>
-                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i></td>
-                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i></td>
+                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i>
+                    </td>
+                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i>
+                    </td>
                     <td style="text-align:center"><i class="bi bi-x-circle" style="color:var(--border)"></i></td>
                   </tr>
                   <tr style="border-bottom:1px solid #F8FAFC">
                     <td style="padding:10px 0">View Reports</td>
-                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i></td>
-                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i></td>
-                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i></td>
+                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i>
+                    </td>
+                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i>
+                    </td>
+                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i>
+                    </td>
                   </tr>
                   <tr style="border-bottom:1px solid #F8FAFC">
                     <td style="padding:10px 0">Manage Settings</td>
-                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i></td>
+                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i>
+                    </td>
                     <td style="text-align:center"><i class="bi bi-x-circle" style="color:var(--border)"></i></td>
                     <td style="text-align:center"><i class="bi bi-x-circle" style="color:var(--border)"></i></td>
                   </tr>
                   <tr>
                     <td style="padding:10px 0">Delete Records</td>
-                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i></td>
+                    <td style="text-align:center"><i class="bi bi-check-circle-fill" style="color:var(--green)"></i>
+                    </td>
                     <td style="text-align:center"><i class="bi bi-x-circle" style="color:var(--border)"></i></td>
                     <td style="text-align:center"><i class="bi bi-x-circle" style="color:var(--border)"></i></td>
                   </tr>
@@ -967,7 +1328,8 @@
                   <input class="settings-input" type="password" placeholder="Repeat new password">
                 </div>
               </div>
-              <button class="btn-primary-cta" onclick="showToast('Password updated successfully!')"><i class="bi bi-lock"></i> Update Password</button>
+              <button class="btn-primary-cta" onclick="showToast('Password updated successfully!')"><i
+                  class="bi bi-lock"></i> Update Password</button>
             </div>
 
             <div class="settings-section">
@@ -985,14 +1347,16 @@
                   <div class="toggle-name">Auto-logout after inactivity</div>
                   <div class="toggle-desc">Logout automatically after 30 minutes of no activity.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
               <div class="toggle-row">
                 <div class="toggle-info">
                   <div class="toggle-name">Login activity alerts</div>
                   <div class="toggle-desc">Email you whenever a new login is detected.</div>
                 </div>
-                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked></div>
+                <div class="form-check form-switch mb-0"><input class="form-check-input" type="checkbox" checked>
+                </div>
               </div>
             </div>
 
@@ -1005,7 +1369,8 @@
                   <div class="member-name">Chrome on Windows</div>
                   <div class="member-email">Bengaluru, IN · Current session</div>
                 </div>
-                <span style="margin-left:auto;font-size:12px;color:var(--green);font-weight:600;background:var(--green-light);padding:4px 10px;border-radius:20px;">Active</span>
+                <span
+                  style="margin-left:auto;font-size:12px;color:var(--green);font-weight:600;background:var(--green-light);padding:4px 10px;border-radius:20px;">Active</span>
               </div>
               <div class="team-member">
                 <div style="font-size:24px;color:var(--text-muted)"><i class="bi bi-phone"></i></div>
@@ -1013,7 +1378,8 @@
                   <div class="member-name">Safari on iPhone</div>
                   <div class="member-email">Mumbai, IN · 2 days ago</div>
                 </div>
-                <button class="btn-secondary-cta" style="margin-left:auto;font-size:12px;padding:6px 12px" onclick="showToast('Session revoked')">Revoke</button>
+                <button class="btn-secondary-cta" style="margin-left:auto;font-size:12px;padding:6px 12px"
+                  onclick="showToast('Session revoked')">Revoke</button>
               </div>
             </div>
           </div>
@@ -1022,23 +1388,31 @@
           <div class="settings-panel" id="panel-danger">
             <div class="danger-section">
               <div class="danger-title"><i class="bi bi-exclamation-triangle-fill"></i> Clear All Invoice Data</div>
-              <div class="danger-desc">Permanently delete all invoices and transaction records. This cannot be undone.</div>
-              <button class="btn-danger" onclick="showToast('Action cancelled — confirmation required')"><i class="bi bi-trash3"></i> Clear Invoice Data</button>
+              <div class="danger-desc">Permanently delete all invoices and transaction records. This cannot be undone.
+              </div>
+              <button class="btn-danger" onclick="showToast('Action cancelled — confirmation required')"><i
+                  class="bi bi-trash3"></i> Clear Invoice Data</button>
             </div>
             <div class="danger-section">
               <div class="danger-title"><i class="bi bi-person-x-fill"></i> Delete All Customers</div>
-              <div class="danger-desc">Remove all customer records permanently. Invoices linked to these customers will lose their customer info.</div>
-              <button class="btn-danger" onclick="showToast('Action cancelled — confirmation required')"><i class="bi bi-trash3"></i> Delete All Customers</button>
+              <div class="danger-desc">Remove all customer records permanently. Invoices linked to these customers
+                will lose their customer info.</div>
+              <button class="btn-danger" onclick="showToast('Action cancelled — confirmation required')"><i
+                  class="bi bi-trash3"></i> Delete All Customers</button>
             </div>
             <div class="danger-section">
               <div class="danger-title"><i class="bi bi-shield-x"></i> Reset to Factory Settings</div>
-              <div class="danger-desc">Wipe all settings, data, and configurations. Your account will be reset to its initial state. All team members will be removed.</div>
-              <button class="btn-danger" onclick="showToast('Action cancelled — confirmation required')"><i class="bi bi-shield-x"></i> Reset Everything</button>
+              <div class="danger-desc">Wipe all settings, data, and configurations. Your account will be reset to its
+                initial state. All team members will be removed.</div>
+              <button class="btn-danger" onclick="showToast('Action cancelled — confirmation required')"><i
+                  class="bi bi-shield-x"></i> Reset Everything</button>
             </div>
             <div class="settings-section">
               <div class="settings-section-title">Export All Data</div>
-              <div class="settings-section-desc">Download a full backup of your BillFlow data before making destructive changes.</div>
-              <button class="btn-primary-cta" onclick="showToast('Preparing data export...')"><i class="bi bi-cloud-download"></i> Export Full Backup (ZIP)</button>
+              <div class="settings-section-desc">Download a full backup of your BillFlow data before making
+                destructive changes.</div>
+              <button class="btn-primary-cta" onclick="showToast('Preparing data export...')"><i
+                  class="bi bi-cloud-download"></i> Export Full Backup (ZIP)</button>
             </div>
           </div>
 
@@ -1046,10 +1420,10 @@
       </div><!-- end settings-shell -->
     </div><!-- end page-body -->
   </main>
-</div>
+  </div>
 
-<!-- Toast -->
-<div id="toast" style="
+  <!-- Toast -->
+  <div id="toast" style="
   position:fixed;bottom:28px;right:28px;
   background:#0F172A;color:#fff;
   padding:12px 20px;border-radius:10px;
@@ -1059,53 +1433,64 @@
   transition:all 0.3s ease;z-index:9999;
   display:flex;align-items:center;gap:10px;
 ">
-  <i class="bi bi-check-circle-fill" style="color:#34D399"></i>
-  <span id="toastMsg">Saved</span>
-</div>
+    <i class="bi bi-check-circle-fill" style="color:#34D399"></i>
+    <span id="toastMsg">Saved</span>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-function showPanel(id, el) {
-  document.querySelectorAll('.settings-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.settings-nav-item').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
-  el.classList.add('active');
-}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function showPanel(id, el) {
+      document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.settings-nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById('panel-' + id).classList.add('active');
+      el.classList.add('active');
+    }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  t.style.transform='translateY(0)'; t.style.opacity='1';
-  setTimeout(()=>{ t.style.transform='translateY(80px)'; t.style.opacity='0'; }, 2800);
-}
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.style.transform = 'translateY(0)'; t.style.opacity = '1';
+      setTimeout(() => { t.style.transform = 'translateY(80px)'; t.style.opacity = '0'; }, 2800);
+    }
 
-function selectColor(el) {
-  document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
-  el.classList.add('selected');
-  const c = el.dataset.color;
-  document.getElementById('hexInput').value = c;
-  document.getElementById('previewColor').style.color = c;
-}
+    function selectColor(el) {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+      const c = el.dataset.color;
+      document.getElementById('hexInput').value = c;
+      document.getElementById('previewColor').style.color = c;
+    }
 
-function applyHex(val) {
-  if(/^#[0-9A-Fa-f]{6}$/.test(val)) {
-    document.getElementById('previewColor').style.color = val;
-    document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('selected'));
-  }
-}
+    function applyHex(val) {
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        document.getElementById('previewColor').style.color = val;
+        document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      }
+    }
 
-function addTaxRow() {
-  const row = document.createElement('div');
-  row.className = 'tax-row';
-  row.innerHTML = `
+    function addTaxRow() {
+      const row = document.createElement('div');
+      row.className = 'tax-row';
+      row.innerHTML = `
     <input class="settings-input" placeholder="Tax name">
     <input class="settings-input" type="number" placeholder="0">
     <select class="settings-input"><option>GST</option><option>VAT</option><option>Custom</option></select>
     <button class="action-btn" style="color:var(--danger)" onclick="this.closest('.tax-row').remove()"><i class="bi bi-trash3"></i></button>
   `;
-  document.getElementById('taxRows').appendChild(row);
-  row.querySelector('input').focus();
-}
-</script>
+      document.getElementById('taxRows').appendChild(row);
+      row.querySelector('input').focus();
+    }
+  </script>
+  <script>
+    function logout() {
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+
+      window.location.href = "login.html";
+
+    }
+  </script>
 </body>
+
 </html>

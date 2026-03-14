@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BillFlow – Reports</title>
+  <script>
+    if (!localStorage.getItem("accessToken")) {
+      window.location.href = "login.html"
+    }
+  </script>
+  <script src="assets/js/api.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -19,6 +28,7 @@
       border-radius: 10px;
       padding: 4px;
     }
+
     .report-tab {
       padding: 7px 16px;
       border-radius: 7px;
@@ -31,12 +41,16 @@
       cursor: pointer;
       transition: all 0.15s;
     }
+
     .report-tab.active {
       background: var(--card-bg);
       color: var(--blue);
-      box-shadow: 0 1px 4px rgba(15,23,42,0.08);
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
     }
-    .report-tab:hover:not(.active) { color: var(--text); }
+
+    .report-tab:hover:not(.active) {
+      color: var(--text);
+    }
 
     .period-select {
       padding: 7px 14px;
@@ -49,7 +63,10 @@
       outline: none;
       cursor: pointer;
     }
-    .period-select:focus { border-color: var(--blue); }
+
+    .period-select:focus {
+      border-color: var(--blue);
+    }
 
     /* KPI row */
     .kpi-grid {
@@ -58,6 +75,7 @@
       gap: 16px;
       margin-bottom: 24px;
     }
+
     .kpi-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -68,17 +86,32 @@
       overflow: hidden;
       animation: fadeUp 0.25s ease both;
     }
+
     .kpi-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 3px;
       border-radius: var(--radius) var(--radius) 0 0;
     }
-    .kpi-card.k-blue::before  { background: var(--blue); }
-    .kpi-card.k-green::before { background: var(--green); }
-    .kpi-card.k-orange::before{ background: var(--orange); }
-    .kpi-card.k-purple::before{ background: var(--purple); }
+
+    .kpi-card.k-blue::before {
+      background: var(--blue);
+    }
+
+    .kpi-card.k-green::before {
+      background: var(--green);
+    }
+
+    .kpi-card.k-orange::before {
+      background: var(--orange);
+    }
+
+    .kpi-card.k-purple::before {
+      background: var(--purple);
+    }
 
     .kpi-label {
       font-size: 11.5px;
@@ -88,6 +121,7 @@
       color: var(--text-muted);
       margin-bottom: 8px;
     }
+
     .kpi-value {
       font-family: 'Syne', sans-serif;
       font-size: 26px;
@@ -96,6 +130,7 @@
       line-height: 1;
       margin-bottom: 8px;
     }
+
     .kpi-compare {
       font-size: 12px;
       font-weight: 500;
@@ -103,11 +138,19 @@
       align-items: center;
       gap: 4px;
     }
-    .kpi-compare.up   { color: var(--green); }
-    .kpi-compare.down { color: var(--danger); }
+
+    .kpi-compare.up {
+      color: var(--green);
+    }
+
+    .kpi-compare.down {
+      color: var(--danger);
+    }
+
     .kpi-sparkline {
       position: absolute;
-      bottom: 0; right: 0;
+      bottom: 0;
+      right: 0;
       opacity: 0.12;
       font-size: 64px;
       line-height: 1;
@@ -121,6 +164,7 @@
       gap: 20px;
       margin-bottom: 24px;
     }
+
     .chart-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -129,21 +173,25 @@
       box-shadow: var(--shadow);
       animation: fadeUp 0.3s ease both;
     }
+
     .chart-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
     }
+
     .chart-title {
       font-family: 'Syne', sans-serif;
       font-size: 14px;
       font-weight: 700;
     }
+
     .chart-legend {
       display: flex;
       gap: 14px;
     }
+
     .legend-dot {
       display: flex;
       align-items: center;
@@ -152,15 +200,26 @@
       color: var(--text-muted);
       font-weight: 500;
     }
+
     .legend-dot::before {
       content: '';
-      width: 8px; height: 8px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: currentColor;
     }
-    .legend-dot.blue  { color: var(--blue); }
-    .legend-dot.green { color: var(--green); }
-    .legend-dot.orange{ color: var(--orange); }
+
+    .legend-dot.blue {
+      color: var(--blue);
+    }
+
+    .legend-dot.green {
+      color: var(--green);
+    }
+
+    .legend-dot.orange {
+      color: var(--orange);
+    }
 
     /* Bottom row */
     .bottom-row {
@@ -171,33 +230,82 @@
     }
 
     /* Top products table */
-    .top-table { width: 100%; border-collapse: collapse; }
+    .top-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
     .top-table th {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.4px; color: var(--text-muted);
-      padding: 8px 10px; border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
       text-align: left;
     }
+
     .top-table td {
-      padding: 11px 10px; border-bottom: 1px solid #F8FAFC;
+      padding: 11px 10px;
+      border-bottom: 1px solid #F8FAFC;
       font-size: 13px;
     }
-    .top-table tr:last-child td { border-bottom: none; }
-    .top-table tr:hover td { background: #FAFBFF; }
+
+    .top-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .top-table tr:hover td {
+      background: #FAFBFF;
+    }
 
     .rank-badge {
-      width: 22px; height: 22px;
+      width: 22px;
+      height: 22px;
       border-radius: 6px;
-      display: inline-flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
     }
-    .rank-1 { background: #FEF9C3; color: #854D0E; }
-    .rank-2 { background: #F1F5F9; color: #475569; }
-    .rank-3 { background: #FEF3C7; color: #92400E; }
-    .rank-n { background: #F8FAFC; color: #94A3B8; }
 
-    .bar-mini-wrap { background: var(--border); border-radius: 3px; height: 5px; width: 80px; display: inline-block; vertical-align: middle; margin-left: 6px; }
-    .bar-mini { height: 100%; border-radius: 3px; background: var(--blue); }
+    .rank-1 {
+      background: #FEF9C3;
+      color: #854D0E;
+    }
+
+    .rank-2 {
+      background: #F1F5F9;
+      color: #475569;
+    }
+
+    .rank-3 {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .rank-n {
+      background: #F8FAFC;
+      color: #94A3B8;
+    }
+
+    .bar-mini-wrap {
+      background: var(--border);
+      border-radius: 3px;
+      height: 5px;
+      width: 80px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    .bar-mini {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--blue);
+    }
 
     /* Export panel */
     .export-grid {
@@ -205,6 +313,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
     }
+
     .export-btn {
       display: flex;
       flex-direction: column;
@@ -220,98 +329,222 @@
       font-weight: 600;
       color: var(--text-muted);
     }
-    .export-btn i { font-size: 20px; }
-    .export-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
-    .export-btn.pdf:hover  { border-color: var(--danger); color: var(--danger); background: var(--danger-light); }
-    .export-btn.xls:hover  { border-color: var(--green);  color: var(--green);  background: var(--green-light);  }
-    .export-btn.csv:hover  { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
+
+    .export-btn i {
+      font-size: 20px;
+    }
+
+    .export-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .export-btn.pdf:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--danger-light);
+    }
+
+    .export-btn.xls:hover {
+      border-color: var(--green);
+      color: var(--green);
+      background: var(--green-light);
+    }
+
+    .export-btn.csv:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+      background: var(--orange-light);
+    }
 
     /* Customer segment donut */
-    .donut-wrap { position: relative; }
+    .donut-wrap {
+      position: relative;
+    }
+
     .donut-center {
       position: absolute;
-      top: 50%; left: 50%;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
       pointer-events: none;
     }
+
     .donut-center-val {
       font-family: 'Syne', sans-serif;
-      font-size: 20px; font-weight: 800;
+      font-size: 20px;
+      font-weight: 800;
       line-height: 1;
     }
-    .donut-center-label { font-size: 11px; color: var(--text-muted); }
 
-    .segment-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .donut-center-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .segment-list {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .segment-item {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       font-size: 12.5px;
     }
+
     .segment-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      margin-right: 6px; flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      flex-shrink: 0;
     }
-    .segment-left { display: flex; align-items: center; }
-    .segment-pct { font-weight: 700; font-size: 13px; }
+
+    .segment-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .segment-pct {
+      font-weight: 700;
+      font-size: 13px;
+    }
 
     /* Monthly target */
-    .target-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-    .target-labels { width: 100%; }
-    .target-label-row {
-      display: flex; justify-content: space-between;
-      font-size: 12px; margin-bottom: 6px;
+    .target-ring-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
     }
-    .target-bar-outer {
-      height: 8px; border-radius: 4px;
-      background: var(--border); overflow: hidden; margin-bottom: 14px;
-    }
-    .target-bar-inner { height: 100%; border-radius: 4px; background: var(--blue); transition: width 1s ease; }
 
-    .target-milestones { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .target-labels {
+      width: 100%;
+    }
+
+    .target-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .target-bar-outer {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .target-bar-inner {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--blue);
+      transition: width 1s ease;
+    }
+
+    .target-milestones {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
     .milestone-item {
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: 12.5px; padding: 8px 12px;
-      border-radius: 8px; border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
       background: var(--bg);
     }
-    .milestone-left { display: flex; align-items: center; gap: 8px; }
-    .milestone-icon { font-size: 15px; }
-    .milestone-done { color: var(--green); }
-    .milestone-pending { color: var(--text-muted); }
+
+    .milestone-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .milestone-icon {
+      font-size: 15px;
+    }
+
+    .milestone-done {
+      color: var(--green);
+    }
+
+    .milestone-pending {
+      color: var(--text-muted);
+    }
 
     @media (max-width: 1100px) {
-      .kpi-grid    { grid-template-columns: repeat(2,1fr); }
-      .charts-row  { grid-template-columns: 1fr; }
-      .bottom-row  { grid-template-columns: 1fr 1fr; }
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+
+      .bottom-row {
+        grid-template-columns: 1fr 1fr;
+      }
     }
+
     @media (max-width: 700px) {
-      .kpi-grid   { grid-template-columns: 1fr 1fr; }
-      .bottom-row { grid-template-columns: 1fr; }
-      .export-grid { grid-template-columns: repeat(3,1fr); }
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .bottom-row {
+        grid-template-columns: 1fr;
+      }
+
+      .export-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
   </style>
 </head>
-<body>
-<div class="app-shell d-flex">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
-      <span class="brand-name">BillFlow</span>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="index.html"          class="nav-item"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
-      <a href="create-invoice.html" class="nav-item"><i class="bi bi-plus-square"></i><span>Create Bill</span></a>
-      <a href="invoices.html"       class="nav-item"><i class="bi bi-receipt"></i><span>Invoices</span></a>
-      <a href="customers.html"      class="nav-item"><i class="bi bi-people"></i><span>Patient</span></a>
-      <a href="reports.html"        class="nav-item active"><i class="bi bi-bar-chart-line"></i><span>Reports</span></a>
-      <a href="settings.html"       class="nav-item"><i class="bi bi-gear"></i><span>Settings</span></a>
-    </nav>
-    <div class="sidebar-footer">
+<body>
+  <div class="app-shell d-flex">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+        <span class="brand-name">BillFlow</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a>
+        <a href="create-invoice.html" class="nav-item"><i class="bi bi-plus-square"></i><span>Create Bill</span></a>
+        <a href="invoices.html" class="nav-item"><i class="bi bi-receipt"></i><span>Invoices</span></a>
+        <a href="customers.html" class="nav-item"><i class="bi bi-people"></i><span>Patient</span></a>
+        <a href="reports.html" class="nav-item active"><i class="bi bi-bar-chart-line"></i><span>Reports</span></a>
+        <a href="settings.html" class="nav-item"><i class="bi bi-gear"></i><span>Settings</span></a>
+      </nav>
+      <div class="sidebar-footer">
       <div class="user-avatar">A</div>
-      <div><div class="user-name">Admin</div><div class="user-role">Super Admin</div></div>
-    </div>
+
+      <div>
+        <div class="user-name">Admin</div>
+        <div class="user-role">Super Admin</div>
+
+        <button onclick="logout()" class="logout-btn">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
+  </div>
   </aside>
 
   <!-- Main -->
@@ -324,9 +557,9 @@
       <div class="topbar-actions">
         <div class="report-tabs">
           <button class="report-tab active" onclick="switchTab(this,'overview')">Overview</button>
-          <button class="report-tab"        onclick="switchTab(this,'sales')">Sales</button>
-          <button class="report-tab"        onclick="switchTab(this,'customers')">Customers</button>
-          <button class="report-tab"        onclick="switchTab(this,'tax')">Tax</button>
+          <button class="report-tab" onclick="switchTab(this,'sales')">Sales</button>
+          <button class="report-tab" onclick="switchTab(this,'customers')">Customers</button>
+          <button class="report-tab" onclick="switchTab(this,'tax')">Tax</button>
         </div>
         <select class="period-select" id="periodSelect" onchange="updateCharts()">
           <option value="7">Last 7 days</option>
@@ -343,25 +576,25 @@
       <div class="kpi-grid">
         <div class="kpi-card k-blue">
           <div class="kpi-label">Total Revenue</div>
-          <div class="kpi-value" id="kpiRevenue">₹1,84,200</div>
+          <div class="kpi-value" id="kpiRevenue">₹0</div>
           <div class="kpi-compare up"><i class="bi bi-arrow-up-right"></i> +8.1% vs last period</div>
           <div class="kpi-sparkline"><i class="bi bi-graph-up"></i></div>
         </div>
         <div class="kpi-card k-green">
           <div class="kpi-label">Invoices Raised</div>
-          <div class="kpi-value" id="kpiInvoices">284</div>
+          <<div class="kpi-value" id="kpiInvoices">0</div>
           <div class="kpi-compare up"><i class="bi bi-arrow-up-right"></i> +12.3% vs last period</div>
           <div class="kpi-sparkline"><i class="bi bi-receipt"></i></div>
         </div>
         <div class="kpi-card k-orange">
           <div class="kpi-label">Avg Invoice Value</div>
-          <div class="kpi-value" id="kpiAvg">₹648</div>
+          <div class="kpi-value" id="kpiAvg">₹0</div>
           <div class="kpi-compare down"><i class="bi bi-arrow-down-right"></i> −3.2% vs last period</div>
           <div class="kpi-sparkline"><i class="bi bi-calculator"></i></div>
         </div>
         <div class="kpi-card k-purple">
           <div class="kpi-label">Collection Rate</div>
-          <div class="kpi-value" id="kpiCollection">86%</div>
+          <div class="kpi-value" id="kpiCollection">%</div>
           <div class="kpi-compare up"><i class="bi bi-arrow-up-right"></i> +2.4% vs last period</div>
           <div class="kpi-sparkline"><i class="bi bi-bullseye"></i></div>
         </div>
@@ -374,7 +607,8 @@
           <div class="chart-header">
             <div>
               <div class="chart-title">Revenue Trend</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Daily revenue over selected period</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Daily revenue over selected period
+              </div>
             </div>
             <div class="chart-legend">
               <span class="legend-dot blue">Revenue</span>
@@ -424,7 +658,12 @@
           </div>
           <table class="top-table">
             <thead>
-              <tr><th>#</th><th>Product</th><th>Sales</th><th>Revenue</th></tr>
+              <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th>Sales</th>
+                <th>Revenue</th>
+              </tr>
             </thead>
             <tbody>
               <tr>
@@ -516,7 +755,8 @@
           <div class="chart-header">
             <div class="chart-title">Export Reports</div>
           </div>
-          <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:16px;">Download detailed reports in your preferred format for the selected period.</p>
+          <p style="font-size:12.5px;color:var(--text-muted);margin-bottom:16px;">Download detailed reports in your
+            preferred format for the selected period.</p>
           <div class="export-grid">
             <button class="export-btn pdf" onclick="showToast('Exporting PDF...')">
               <i class="bi bi-file-earmark-pdf" style="color:#DC2626"></i> PDF
@@ -587,10 +827,10 @@
 
     </div>
   </main>
-</div>
+  </div>
 
-<!-- Toast -->
-<div id="toast" style="
+  <!-- Toast -->
+  <div id="toast" style="
   position:fixed;bottom:28px;right:28px;
   background:#0F172A;color:#fff;
   padding:12px 20px;border-radius:10px;
@@ -600,171 +840,275 @@
   transition:all 0.3s ease;z-index:9999;
   display:flex;align-items:center;gap:10px;
 ">
-  <i class="bi bi-check-circle-fill" style="color:#34D399"></i>
-  <span id="toastMsg">Done</span>
-</div>
+    <i class="bi bi-check-circle-fill" style="color:#34D399"></i>
+    <span id="toastMsg">Done</span>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-/* ─── Toast ─── */
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  t.style.transform = 'translateY(0)'; t.style.opacity = '1';
-  setTimeout(()=>{ t.style.transform='translateY(80px)'; t.style.opacity='0'; }, 2800);
-}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    /* ─── Toast ─── */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.style.transform = 'translateY(0)'; t.style.opacity = '1';
+      setTimeout(() => { t.style.transform = 'translateY(80px)'; t.style.opacity = '0'; }, 2800);
+    }
 
-/* ─── Tab switch ─── */
-function switchTab(el, tab) {
-  document.querySelectorAll('.report-tab').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  updateCharts();
-}
+    /* ─── Tab switch ─── */
+    function switchTab(el, tab) {
+      document.querySelectorAll('.report-tab').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
 
-/* ─── Colour palette ─── */
-const BLUE   = '#2563EB';
-const GREEN  = '#059669';
-const ORANGE = '#D97706';
-const PURPLE = '#7C3AED';
-const BORDER = '#E2E8F0';
-const MUTED  = '#94A3B8';
+    /* ─── Colour palette ─── */
+    const BLUE = '#2563EB';
+    const GREEN = '#059669';
+    const ORANGE = '#D97706';
+    const PURPLE = '#7C3AED';
 
-Chart.defaults.font.family = "'DM Sans', sans-serif";
-Chart.defaults.color = '#64748B';
+    Chart.defaults.font.family = "'DM Sans', sans-serif";
+    Chart.defaults.color = '#64748B';
 
-/* ─── Revenue Line Chart ─── */
-const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-const gradBlue  = revenueCtx.createLinearGradient(0,0,0,200);
-gradBlue.addColorStop(0,'rgba(37,99,235,0.18)');
-gradBlue.addColorStop(1,'rgba(37,99,235,0)');
-const gradGreen = revenueCtx.createLinearGradient(0,0,0,200);
-gradGreen.addColorStop(0,'rgba(5,150,105,0.12)');
-gradGreen.addColorStop(1,'rgba(5,150,105,0)');
+    let revenueChart, payDonut, targetGauge, monthlyBar;
+    let allInvoices = []; // We will store the database fetch here
 
-const revenueChart = new Chart(revenueCtx, {
-  type: 'line',
-  data: {
-    labels: genLabels(30),
-    datasets: [
-      {
-        label: 'Revenue',
-        data: genData(30, 3000, 9000),
-        borderColor: BLUE,
-        backgroundColor: gradBlue,
-        borderWidth: 2.5,
-        pointRadius: 0, pointHoverRadius: 5,
-        pointHoverBackgroundColor: BLUE,
-        tension: 0.4, fill: true,
-      },
-      {
-        label: 'Collected',
-        data: genData(30, 2500, 8000),
-        borderColor: GREEN,
-        backgroundColor: gradGreen,
-        borderWidth: 2,
-        pointRadius: 0, pointHoverRadius: 5,
-        pointHoverBackgroundColor: GREEN,
-        tension: 0.4, fill: true,
-        borderDash: [5,4],
+    // Initializes empty charts on page load
+    function initCharts() {
+      const revCtx = document.getElementById('revenueChart').getContext('2d');
+      const gradBlue = revCtx.createLinearGradient(0, 0, 0, 200);
+      gradBlue.addColorStop(0, 'rgba(37,99,235,0.18)'); gradBlue.addColorStop(1, 'rgba(37,99,235,0)');
+      const gradGreen = revCtx.createLinearGradient(0, 0, 0, 200);
+      gradGreen.addColorStop(0, 'rgba(5,150,105,0.12)'); gradGreen.addColorStop(1, 'rgba(5,150,105,0)');
+
+      revenueChart = new Chart(revCtx, {
+        type: 'line',
+        data: { labels: [], datasets: [
+          { label: 'Revenue', data: [], borderColor: BLUE, backgroundColor: gradBlue, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, fill: true, tension: 0.4 },
+          { label: 'Collected', data: [], borderColor: GREEN, backgroundColor: gradGreen, borderWidth: 2, pointRadius: 0, pointHoverRadius: 5, fill: true, tension: 0.4, borderDash: [5, 4] }
+        ]},
+        options: { responsive: true, maintainAspectRatio: true, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0F172A', padding: 10, cornerRadius: 8 } }, scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } }, y: { grid: { color: '#F1F5F9' }, ticks: { callback: v => '₹' + v.toLocaleString('en-IN') } } } }
+      });
+
+      payDonut = new Chart(document.getElementById('payDonut').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: ['Cash', 'UPI', 'Card'], datasets: [{ data: [0, 0, 0], backgroundColor: [BLUE, GREEN, PURPLE], borderWidth: 3, borderColor: '#fff' }] },
+        options: { cutout: '72%', responsive: true, plugins: { legend: { display: false } } }
+      });
+
+      targetGauge = new Chart(document.getElementById('targetGauge').getContext('2d'), {
+        type: 'doughnut',
+        data: { datasets: [{ data: [0, 100], backgroundColor: [BLUE, '#F1F5F9'], borderWidth: 0 }] },
+        options: { cutout: '78%', rotation: -90, circumference: 180, responsive: true, plugins: { tooltip: { enabled: false } } },
+        plugins: [{
+          id: 'gaugeText',
+          afterDraw(chart) {
+            const { ctx, chartArea: { left, right, bottom } } = chart;
+            const cx = (left + right) / 2, cy = bottom;
+            ctx.save();
+            ctx.font = "800 22px 'Syne', sans-serif"; ctx.fillStyle = '#0F172A'; ctx.textAlign = 'center';
+            const val = chart.data.datasets[0].data[0] || 0;
+            ctx.fillText(val + '%', cx, cy - 6);
+            ctx.font = "500 11px 'DM Sans', sans-serif"; ctx.fillStyle = '#94A3B8'; ctx.fillText('of target', cx, cy + 10);
+            ctx.restore();
+          }
+        }]
+      });
+
+      monthlyBar = new Chart(document.getElementById('monthlyBar').getContext('2d'), {
+        type: 'bar',
+        data: { labels: [], datasets: [
+          { label: 'Revenue', data: [], backgroundColor: BLUE + 'CC', borderRadius: 6, barPercentage: 0.55 },
+          { label: 'Collected', data: [], backgroundColor: GREEN + 'CC', borderRadius: 6, barPercentage: 0.55 },
+        ]},
+        options: { responsive: true, maintainAspectRatio: true, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0F172A', padding: 10, cornerRadius: 8 } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#F1F5F9' }, ticks: { callback: v => '₹' + (v / 1000).toFixed(0) + 'K' } } } }
+      });
+    }
+
+    // 1. Fetch data from backend on load
+    async function fetchAllAndRender() {
+      try {
+        const oneYearAgo = new Date();
+        oneYearAgo.setDate(oneYearAgo.getDate() - 365);
+        
+        // Grab everything up to a year ago to power the monthly chart
+        const res = await apiRequest(`/api/invoices?limit=10000&startDate=${oneYearAgo.toISOString()}`);
+        allInvoices = res.data || [];
+        
+        initCharts();
+        updateCharts(); // This triggers the calculation math
+      } catch (err) {
+        console.error("Failed to load report data", err);
       }
-    ]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: true,
-    interaction: { mode: 'index', intersect: false },
-    plugins: { legend: { display: false }, tooltip: { backgroundColor:'#0F172A', padding:10, cornerRadius:8 } },
-    scales: {
-      x: { grid:{ display:false }, ticks:{ maxTicksLimit:8 } },
-      y: { grid:{ color:'#F1F5F9' }, ticks:{ callback: v=>'₹'+v.toLocaleString('en-IN') } }
     }
-  }
-});
 
-/* ─── Payment Donut ─── */
-new Chart(document.getElementById('payDonut').getContext('2d'), {
-  type: 'doughnut',
-  data: {
-    labels: ['Cash','UPI','Card'],
-    datasets: [{ data:[62,28,10], backgroundColor:[BLUE,GREEN,PURPLE], borderWidth:3, borderColor:'#fff', hoverOffset:6 }]
-  },
-  options: {
-    cutout:'72%', responsive:true,
-    plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: c => c.label+': '+c.parsed+'%' } } }
-  }
-});
+    // 2. This runs when you change the "Last 30 Days" dropdown!
+    function updateCharts() {
+      if(!allInvoices.length && !revenueChart) return; 
 
-/* ─── Target Gauge ─── */
-new Chart(document.getElementById('targetGauge').getContext('2d'), {
-  type: 'doughnut',
-  data: {
-    datasets: [{
-      data: [92, 8],
-      backgroundColor: [BLUE, '#F1F5F9'],
-      borderWidth: 0, hoverOffset: 0,
-    }]
-  },
-  options: {
-    cutout: '78%', rotation: -90, circumference: 180,
-    responsive: true,
-    plugins: { legend:{ display:false }, tooltip:{ enabled:false } }
-  },
-  plugins: [{
-    id:'gaugeText',
-    afterDraw(chart) {
-      const { ctx, chartArea:{ left,right,bottom } } = chart;
-      const cx = (left+right)/2, cy = bottom;
-      ctx.save();
-      ctx.font = "800 22px 'Syne', sans-serif";
-      ctx.fillStyle = '#0F172A';
-      ctx.textAlign = 'center';
-      ctx.fillText('92%', cx, cy - 6);
-      ctx.font = "500 11px 'DM Sans', sans-serif";
-      ctx.fillStyle = '#94A3B8';
-      ctx.fillText('of target', cx, cy + 10);
-      ctx.restore();
+      const days = parseInt(document.getElementById('periodSelect').value);
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - days);
+      cutoff.setHours(0, 0, 0, 0);
+
+      // Filter invoices locally for the top charts
+      const periodInvoices = allInvoices.filter(inv => new Date(inv.createdAt) >= cutoff);
+      
+      calculateDashboard(periodInvoices, days);
+      calculateMonthly(allInvoices);
+      calculateTarget(allInvoices);
     }
-  }]
-});
 
-/* ─── Monthly Bar ─── */
-const months = ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb'];
-new Chart(document.getElementById('monthlyBar').getContext('2d'), {
-  type: 'bar',
-  data: {
-    labels: months,
-    datasets: [
-      { label:'Revenue',    data:[120000,135000,118000,145000,160000,142000,175000,168000,190000,210000,184200], backgroundColor: BLUE+'CC',  borderRadius:6, barPercentage:0.55 },
-      { label:'Collected',  data:[105000,120000,100000,130000,145000,125000,160000,150000,172000,190000,158600], backgroundColor: GREEN+'CC', borderRadius:6, barPercentage:0.55 },
-    ]
-  },
-  options: {
-    responsive:true, maintainAspectRatio:true,
-    interaction:{ mode:'index', intersect:false },
-    plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#0F172A', padding:10, cornerRadius:8, callbacks:{ label: c=>' '+c.dataset.label+': ₹'+c.parsed.y.toLocaleString('en-IN') } } },
-    scales: {
-      x: { grid:{display:false} },
-      y: { grid:{color:'#F1F5F9'}, ticks:{ callback:v=>'₹'+(v/1000).toFixed(0)+'K' } }
+    // 3. The Math Magic
+    function calculateDashboard(invoices, days) {
+      let totalRev = 0, collected = 0;
+      let payCash = 0, payUpi = 0, payCard = 0;
+      let productMap = {};
+      let trendMap = {}; 
+      
+      for(let i = days - 1; i >= 0; i--) {
+        let d = new Date(); d.setDate(d.getDate() - i);
+        trendMap[d.toLocaleDateString('en-IN', {month: 'short', day: 'numeric'})] = { rev: 0, col: 0 };
+      }
+
+      invoices.forEach(inv => {
+        const amt = Number(inv.amount) || 0;
+        totalRev += amt;
+        if (inv.status === 'paid') collected += amt;
+
+        if (inv.paymentMethod === 'cash') payCash += amt;
+        else if (inv.paymentMethod === 'upi') payUpi += amt;
+        else if (inv.paymentMethod === 'card') payCard += amt;
+
+        const dateKey = new Date(inv.createdAt).toLocaleDateString('en-IN', {month: 'short', day: 'numeric'});
+        if (trendMap[dateKey]) {
+          trendMap[dateKey].rev += amt;
+          if (inv.status === 'paid') trendMap[dateKey].col += amt;
+        }
+
+        if (inv.items && Array.isArray(inv.items)) {
+          inv.items.forEach(item => {
+            if (!productMap[item.name]) productMap[item.name] = { sales: 0, revenue: 0 };
+            productMap[item.name].sales += Number(item.qty);
+            productMap[item.name].revenue += Number(item.total);
+          });
+        }
+      });
+
+      const invCount = invoices.length;
+      document.getElementById('kpiRevenue').textContent = '₹' + totalRev.toFixed(2);
+      document.getElementById('kpiInvoices').textContent = invCount;
+      document.getElementById('kpiAvg').textContent = '₹' + (invCount ? (totalRev / invCount) : 0).toFixed(2);
+      document.getElementById('kpiCollection').textContent = (totalRev ? ((collected / totalRev) * 100) : 0).toFixed(1) + '%';
+
+      revenueChart.data.labels = Object.keys(trendMap);
+      revenueChart.data.datasets[0].data = Object.values(trendMap).map(d => d.rev);
+      revenueChart.data.datasets[1].data = Object.values(trendMap).map(d => d.col);
+      revenueChart.update();
+
+      payDonut.data.datasets[0].data = [payCash, payUpi, payCard];
+      payDonut.update();
+
+      document.querySelector('.donut-center-val').textContent = '₹' + (totalRev >= 100000 ? (totalRev / 100000).toFixed(2) + 'L' : totalRev.toFixed(0));
+      const segments = document.querySelectorAll('.segment-pct');
+      if (segments.length >= 3) {
+        segments[0].textContent = (totalRev ? ((payCash / totalRev) * 100) : 0).toFixed(0) + '%';
+        segments[1].textContent = (totalRev ? ((payUpi / totalRev) * 100) : 0).toFixed(0) + '%';
+        segments[2].textContent = (totalRev ? ((payCard / totalRev) * 100) : 0).toFixed(0) + '%';
+      }
+
+      const topProducts = Object.keys(productMap).map(k => ({ name: k, ...productMap[k] })).sort((a, b) => b.revenue - a.revenue).slice(0, 5);
+      const tbody = document.querySelector('.top-table tbody');
+      
+      if(topProducts.length === 0) {
+         tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#94A3B8;padding:20px;">No products sold in this period</td></tr>';
+      } else {
+        const maxRev = topProducts[0].revenue;
+        tbody.innerHTML = topProducts.map((p, i) => {
+          const width = (p.revenue / maxRev) * 100;
+          const rankClass = i === 0 ? 'rank-1' : (i === 1 ? 'rank-2' : (i === 2 ? 'rank-3' : 'rank-n'));
+          return `<tr>
+            <td><span class="rank-badge ${rankClass}">${i + 1}</span></td>
+            <td>${p.name}</td>
+            <td>${p.sales}<span class="bar-mini-wrap"><span class="bar-mini" style="width:${width}%"></span></span></td>
+            <td><strong>₹${p.revenue.toFixed(2)}</strong></td>
+          </tr>`;
+        }).join('');
+      }
     }
-  }
-});
 
-/* ─── Helpers ─── */
-function genLabels(n) {
-  const arr=[]; const d=new Date();
-  for(let i=n-1;i>=0;i--){ const t=new Date(d); t.setDate(t.getDate()-i); arr.push(t.toLocaleDateString('en-IN',{day:'numeric',month:'short'})); }
-  return arr;
-}
-function genData(n,min,max) {
-  return Array.from({length:n},()=>Math.floor(min+Math.random()*(max-min)));
-}
+    function calculateMonthly(invoices) {
+      const monthMap = {};
+      for(let i = 11; i >= 0; i--) {
+        let d = new Date(); d.setMonth(d.getMonth() - i);
+        monthMap[d.toLocaleDateString('en-IN', {month: 'short'})] = { rev: 0, col: 0 };
+      }
 
-function updateCharts() {
-  const p = parseInt(document.getElementById('periodSelect').value);
-  revenueChart.data.labels = genLabels(p);
-  revenueChart.data.datasets[0].data = genData(p,3000,9000);
-  revenueChart.data.datasets[1].data = genData(p,2500,8000);
-  revenueChart.update();
-}
-</script>
+      invoices.forEach(inv => {
+        const m = new Date(inv.createdAt).toLocaleDateString('en-IN', {month: 'short'});
+        if (monthMap[m]) {
+          monthMap[m].rev += Number(inv.amount) || 0;
+          if (inv.status === 'paid') monthMap[m].col += Number(inv.amount) || 0;
+        }
+      });
+
+      monthlyBar.data.labels = Object.keys(monthMap);
+      monthlyBar.data.datasets[0].data = Object.values(monthMap).map(d => d.rev);
+      monthlyBar.data.datasets[1].data = Object.values(monthMap).map(d => d.col);
+      monthlyBar.update();
+    }
+
+    function calculateTarget(invoices) {
+      const currentMonthRev = invoices.filter(inv => {
+         const d = new Date(inv.createdAt); const now = new Date();
+         return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      }).reduce((sum, inv) => sum + (Number(inv.amount) || 0), 0);
+      
+      const TARGET = 200000; // Change this 2,00,000 goal if needed!
+      const pct = Math.min(100, Math.round((currentMonthRev / TARGET) * 100));
+      
+      targetGauge.data.datasets[0].data = [pct, 100 - pct];
+      targetGauge.update();
+
+      const labelRow = document.querySelector('.target-label-row').children[1];
+      labelRow.textContent = `₹${currentMonthRev.toLocaleString('en-IN')} / ₹${TARGET.toLocaleString('en-IN')}`;
+      document.querySelector('.target-bar-inner').style.width = pct + '%';
+
+      const m = document.querySelectorAll('.milestone-item');
+      function setM(el, isDone) {
+         if(!el) return;
+         if(isDone) {
+            el.querySelector('.milestone-icon').className = 'milestone-icon milestone-done';
+            el.querySelector('.milestone-icon').innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+            el.querySelector('span[class^="badge-"]').className = 'badge-paid';
+            el.querySelector('span[class^="badge-"]').textContent = 'Done';
+         } else {
+            el.querySelector('.milestone-icon').className = 'milestone-icon milestone-pending';
+            el.querySelector('.milestone-icon').innerHTML = '<i class="bi bi-circle"></i>';
+            el.querySelector('span[class^="badge-"]').className = 'badge-pending';
+         }
+      }
+      
+      setM(m[0], currentMonthRev >= TARGET * 0.25); setM(m[1], currentMonthRev >= TARGET * 0.50); setM(m[2], currentMonthRev >= TARGET * 0.75);
+      if(currentMonthRev >= TARGET) {
+         setM(m[3], true);
+      } else {
+         setM(m[3], false); m[3].querySelector('span[class^="badge-"]').textContent = `₹${(TARGET - currentMonthRev).toLocaleString('en-IN')} left`;
+      }
+    }
+
+    // Trigger on page load
+    document.addEventListener('DOMContentLoaded', fetchAllAndRender);
+  </script>
+  <script>
+    function logout() {
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+
+      window.location.href = "login.html";
+
+    }
+  </script>
 </body>
+
 </html>
