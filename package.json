@@ -1,12 +1,12 @@
 {
-  "dependencies": {
-    "axios": "^1.13.6",
-    "express-rate-limit": "^8.3.0",
-    "morgan": "^1.10.1",
-    "node-cron": "^4.2.1",
-    "nodemailer": "^8.0.2",
-    "resend": "^6.9.3",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+  "name": "billing-app",
+  "version": "1.0.0",
+  "description": "BillFlow – Full-stack billing application",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "cd backend && node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

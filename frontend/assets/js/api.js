@@ -1,4 +1,11 @@
-const API_BASE = "https://billing-app-o5vw.onrender.com"
+/*
+ * API_BASE auto-detects the environment:
+ *  - On Render (or any deployed host): same-origin, so empty string → relative URLs
+ *  - On localhost: point to the backend dev server on port 5000
+ */
+const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ? `http://localhost:5000`
+  : "";
 
 /*
 Token helpers
