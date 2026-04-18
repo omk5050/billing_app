@@ -1509,3 +1509,121 @@ textarea.form-input {
 html, body {
   height: 100%;
 }
+
+/* =========================================
+     OCR Scanner Styles
+     ========================================= */
+
+.scan-btn {
+  background: var(--purple);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 9px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+  transition: 0.15s;
+}
+
+.scan-btn:hover {
+  background: #6D28D9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+}
+
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.15s;
+  background: #FAFBFF;
+}
+
+.upload-zone.dragover {
+  border-color: var(--blue);
+  background: var(--blue-light);
+}
+
+.upload-zone i {
+  font-size: 40px;
+  color: var(--blue);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.upload-zone p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+.scan-processing {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.scan-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--blue-light);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.review-panel {
+  display: grid;
+  gap: 20px;
+}
+
+.extracted-field {
+  position: relative;
+}
+
+.confidence-indicator {
+  position: absolute;
+  right: 12px;
+  top: 32px;
+  font-size: 14px;
+}
+
+.confidence-indicator.high { color: var(--green); }
+.confidence-indicator.medium { color: var(--orange); }
+.confidence-indicator.low { color: var(--danger); }
+
+.raw-text-log {
+  background: #0F172A;
+  color: #94A3B8;
+  font-family: monospace;
+  font-size: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  margin-top: 10px;
+}
+
+.review-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+.badge-extracted { background: var(--green-light); color: var(--green); }
+.badge-manual { background: var(--bg); color: var(--text-muted); }

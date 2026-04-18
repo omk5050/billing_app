@@ -12,6 +12,8 @@ const {
   deleteInvoice
 } = require('./invoice.controller');
 
+const { scanInvoice, upload } = require('./scan.controller');
+
 const { protect } = require('../../middleware/auth.middleware');
 
 /*
@@ -20,6 +22,29 @@ const { protect } = require('../../middleware/auth.middleware');
  *   name: Invoices
  *   description: Invoice management
  */
+
+/**
+ * @swagger
+ * /api/invoices/scan:
+ *   post:
+ *     summary: Scan invoice image for data extraction
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Data extracted successfully
+ */
+router.post('/scan', protect, upload.single('image'), scanInvoice);
 
 
 

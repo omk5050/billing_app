@@ -86,6 +86,9 @@
         <p class="page-sub">Fill in the details to generate a new invoice.</p>
       </div>
       <div class="topbar-actions">
+        <button class="scan-btn" id="openScanBtn">
+          <i class="bi bi-camera"></i> Scan Bill
+        </button>
         <span class="inv-badge">Draft: <strong id="invNumber"></strong></span>
       </div>
     </header>
@@ -303,6 +306,83 @@
     </div>
   </div>
 
+  <!-- Scan Modal -->
+  <div class="modal fade" id="scanModal" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Scan Bill with OCR</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          
+          <!-- Step 1: Upload -->
+          <div id="scanStepUpload">
+            <div class="upload-zone" id="uploadZone">
+              <input type="file" id="scanFileInput" accept="image/*" hidden>
+              <i class="bi bi-cloud-arrow-up"></i>
+              <p>Drag & Drop an invoice image here or <strong>browse files</strong></p>
+              <small class="text-muted d-block mt-2">Max file size: 2MB (JPG, PNG, WebP)</small>
+            </div>
+          </div>
+
+          <!-- Step 2: Processing -->
+          <div id="scanStepProcessing" style="display: none;">
+            <div class="scan-processing">
+              <div class="scan-spinner"></div>
+              <h6>Extracting Invoice Data...</h6>
+              <p class="text-muted small">Optimizing image and running Tesseract OCR engine. This might take 5-10 seconds.</p>
+            </div>
+          </div>
+
+          <!-- Step 3: Review -->
+          <div id="scanStepReview" style="display: none;">
+            <div class="review-panel">
+              <div class="extracted-field">
+                <label class="form-label-custom">Customer Name <span class="review-badge" id="badgeName"></span></label>
+                <input type="text" class="form-input" id="ocrName">
+              </div>
+              <div class="extracted-field">
+                <label class="form-label-custom">Customer Email <span class="review-badge" id="badgeEmail"></span></label>
+                <input type="email" class="form-input" id="ocrEmail">
+              </div>
+              <div class="row">
+                <div class="col-6 extracted-field">
+                  <label class="form-label-custom">Amount (₹) <span class="review-badge" id="badgeAmount"></span></label>
+                  <input type="number" class="form-input" id="ocrAmount">
+                  <div id="ocrAmountConf" class="confidence-indicator"></div>
+                </div>
+                <div class="col-6 extracted-field">
+                  <label class="form-label-custom">Due Date <span class="review-badge" id="badgeDate"></span></label>
+                  <input type="date" class="form-input" id="ocrDate">
+                </div>
+              </div>
+              <div class="extracted-field">
+                <label class="form-label-custom">Status</label>
+                <select class="form-input" id="ocrStatus">
+                  <option value="paid">Paid</option>
+                  <option value="pending">Pending</option>
+                </select>
+              </div>
+
+              <details class="mt-2">
+                <summary class="text-muted small cursor-pointer" style="cursor: pointer;">View Raw OCR Text</summary>
+                <div class="raw-text-log" id="ocrRawText"></div>
+              </details>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer" id="scanModalFooter">
+          <button type="button" class="btn-secondary-cta" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn-primary-cta" id="fillFromOcrBtn" style="display: none;">
+            Fill Into Main Form <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     // Set default dates
@@ -469,8 +549,153 @@
     document.getElementById('invNumber').textContent = '#' + invNum;
   </script>
   <script>
+    /* ─────────────────────────────────────────────────────────────────────────
+       OCR SCANNER LOGIC
+       ───────────────────────────────────────────────────────────────────────── */
+
+    const scanModal = new bootstrap.Modal(document.getElementById('scanModal'));
+    const uploadZone = document.getElementById('uploadZone');
+    const scanFileInput = document.getElementById('scanFileInput');
+
+    const stepUpload = document.getElementById('scanStepUpload');
+    const stepProcessing = document.getElementById('scanStepProcessing');
+    const stepReview = document.getElementById('scanStepReview');
+    const fillFromOcrBtn = document.getElementById('fillFromOcrBtn');
+
+    // Open Modal
+    document.getElementById('openScanBtn').addEventListener('click', () => {
+      resetScanModal();
+      scanModal.show();
+    });
+
+    function resetScanModal() {
+      stepUpload.style.display = 'block';
+      stepProcessing.style.display = 'none';
+      stepReview.style.display = 'none';
+      fillFromOcrBtn.style.display = 'none';
+      scanFileInput.value = '';
+    }
+
+    // File Selection
+    uploadZone.addEventListener('click', () => scanFileInput.click());
+
+    scanFileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) handleScanUpload(e.target.files[0]);
+    });
+
+    // Drag & Drop
+    uploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+
+    uploadZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleScanUpload(e.dataTransfer.files[0]);
+    });
+
+    async function handleScanUpload(file) {
+      if (!file) return;
+      if (file.size > 2 * 1024 * 1024) return alert("File size exceeds 2MB limit.");
+
+      // Switch to processing state
+      stepUpload.style.display = 'none';
+      stepProcessing.style.display = 'block';
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      try {
+        const token = localStorage.getItem("accessToken");
+        const res = await fetch(API_BASE + "/api/invoices/scan", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          },
+          body: formData
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) throw new Error(result.message || "OCR failed");
+
+        showOcrReview(result);
+
+      } catch (err) {
+        alert("Scan failed: " + err.message);
+        resetScanModal();
+      }
+    }
+
+    function showOcrReview(result) {
+      const { data, meta } = result;
+
+      stepProcessing.style.display = 'none';
+      stepReview.style.display = 'block';
+      fillFromOcrBtn.style.display = 'block';
+
+      // Fill review form
+      document.getElementById('ocrName').value = data.customerName || '';
+      document.getElementById('ocrEmail').value = data.customerEmail || '';
+      document.getElementById('ocrAmount').value = data.amount || '';
+      document.getElementById('ocrDate').value = data.dueDate || '';
+      document.getElementById('ocrStatus').value = data.status || 'pending';
+      document.getElementById('ocrRawText').textContent = meta.rawText;
+
+      // Badges
+      updateBadge('badgeName', !!data.customerName);
+      updateBadge('badgeEmail', !!data.customerEmail);
+      updateBadge('badgeAmount', !!data.amount);
+      
+      // Date badge handles ambiguous flag
+      if (meta.dateAmbiguous) {
+        const el = document.getElementById('badgeDate');
+        el.textContent = 'Ambiguous';
+        el.className = 'review-badge badge-overdue'; // red badge
+      } else {
+        updateBadge('badgeDate', !!data.dueDate);
+      }
+
+      // Confidence indicator
+      const confDiv = document.getElementById('ocrAmountConf');
+      confDiv.className = 'confidence-indicator ' + (meta.amountConfidence || 'low');
+      confDiv.innerHTML = meta.amountConfidence === 'high' ? '<i class="bi bi-check-circle-fill"></i>' : 
+                         meta.amountConfidence === 'medium' ? '<i class="bi bi-exclamation-circle-fill"></i>' : 
+                         '<i class="bi bi-question-circle-fill"></i>';
+      confDiv.title = `Confidence: ${meta.amountConfidence}`;
+    }
+
+    function updateBadge(id, found) {
+      const el = document.getElementById(id);
+      el.textContent = found ? 'Extracted' : 'Manual';
+      el.className = 'review-badge ' + (found ? 'badge-extracted' : 'badge-manual');
+    }
+
+    // Fill Into Main Form
+    fillFromOcrBtn.addEventListener('click', () => {
+      document.getElementById('custName').value = document.getElementById('ocrName').value;
+      document.getElementById('custEmail').value = document.getElementById('ocrEmail').value;
+      document.getElementById('dueDate').value = document.getElementById('ocrDate').value;
+      document.getElementById('payStatus').value = document.getElementById('ocrStatus').value;
+
+      const amt = parseFloat(document.getElementById('ocrAmount').value) || 0;
+      
+      // Clear items and add one "OCR Extracted" row
+      document.getElementById('itemsBody').innerHTML = '';
+      addItem('Scanned Bill Item', 1, amt);
+
+      scanModal.hide();
+      calcAll();
+    });
+
+  </script>
+  <script>
 
     document.getElementById("confirmInvoice")
+
       .addEventListener("click", async function () {
 
         const customerName =
